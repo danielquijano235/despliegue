@@ -9,6 +9,7 @@ import DemoEventos from './DemoEventos';
 import DemoContacto from './DemoContacto';
 import DemoReserva from '../componentes/LandingPage/DemoReserva';
 import DemoGallery from './DemoGallery';
+import DemoFooter from './DemoFooter';
 
 const DemoLanding = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -34,6 +35,7 @@ const DemoLanding = () => {
       <DemoContacto />
 
       <DemoReserva visible={modalVisible} onCerrar={cerrarModal} />
+      <DemoFooter />
       
     </div>
   );
