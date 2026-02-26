@@ -1,6 +1,5 @@
-
 ---
- Tecnologías Utilizadas
+Tecnologías Utilizadas
 
 | Tecnología | Uso |
 |---|---|
@@ -12,7 +11,6 @@
 | **MySQL 5.7+** | Base de datos relacional |
 | **MySQLi** | Conexión PHP-MySQL con prepared statements |
 | **XAMPP** | Servidor local (Apache + PHP + MySQL) |
-
 ---
 
 ## 📁 Estructura del Proyecto
@@ -93,6 +91,7 @@ bookit/
 ```
 
 ---
+
 Requisitos
 
 Antes de instalar, asegúrate de tener:
@@ -106,7 +105,6 @@ Antes de instalar, asegúrate de tener:
    - Verificar instalación: `node --version` y `npm --version`
 
 ---
-
 
 ### PASO 1: Configurar la Base de Datos
 
@@ -122,12 +120,15 @@ Antes de instalar, asegúrate de tener:
 ### PASO 2: Configurar el Backend (PHP)
 
 1. Copia la carpeta **`backend`** completa a la ruta de XAMPP:
+
    ```
    C:/xampp/htdocs/bookit/backend/
    ```
+
    (La estructura debería quedar: `C:/xampp/htdocs/bookit/backend/configuracion/conexion.php`)
 
 2. Verifica que la configuración en `backend/configuracion/conexion.php` sea correcta:
+
    ```php
    $servidor = "localhost";
    $usuario = "root";
@@ -140,16 +141,19 @@ Antes de instalar, asegúrate de tener:
 ### PASO 3: Configurar el Frontend (React)
 
 1. Abre una **terminal/CMD** en la carpeta `frontend`:
+
    ```bash
    cd ruta/al/proyecto/frontend
    ```
 
 2. Instala las dependencias con npm:
+
    ```bash
    npm install
    ```
 
 3. Inicia el servidor de desarrollo:
+
    ```bash
    npm start
    ```
@@ -162,10 +166,10 @@ Antes de instalar, asegúrate de tener:
 2. Haz clic en **"Iniciar Sesión"** o ve a http://localhost:3000/login
 3. Usa las credenciales de prueba:
 
-   | Campo | Valor |
-   |---|---|
-   | **Email** | `admin@bookit.com` |
-   | **Contraseña** | `Admin123` |
+   | Campo          | Valor              |
+   | -------------- | ------------------ |
+   | **Email**      | `admin@bookit.com` |
+   | **Contraseña** | `Admin123`         |
 
 4. Después del login, serás redirigido al **Dashboard** con todas las métricas y datos
 
@@ -173,23 +177,23 @@ Antes de instalar, asegúrate de tener:
 
 ## 🔐 Credenciales de Prueba
 
-| Usuario | Email | Contraseña |
-|---|---|---|
-| Daniel Quijano | admin@bookit.com | Admin123 |
+| Usuario        | Email            | Contraseña |
+| -------------- | ---------------- | ---------- |
+| Daniel Quijano | admin@bookit.com | Admin123   |
 
 ---
 
 ## 🎨 Paleta de Colores
 
-| Color | Código | Uso |
-|---|---|---|
-| Amarillo (principal) | `#FDB022` | Botones, badges, logo |
-| Azul oscuro | `#1e3a5f` | Sidebar, footer, navbar |
-| Verde | `#10B981` | Badges positivos, confirmaciones |
-| Morado | `#8B5CF6` | Iconos y acentos |
-| Rosa | `#EC4899` | Iconos y variedad visual |
-| Naranja | `#F97316` | Iconos y alertas |
-| Gris fondo | `#f5f6fa` | Fondos de secciones |
+| Color                | Código    | Uso                              |
+| -------------------- | --------- | -------------------------------- |
+| Amarillo (principal) | `#FDB022` | Botones, badges, logo            |
+| Azul oscuro          | `#1e3a5f` | Sidebar, footer, navbar          |
+| Verde                | `#10B981` | Badges positivos, confirmaciones |
+| Morado               | `#8B5CF6` | Iconos y acentos                 |
+| Rosa                 | `#EC4899` | Iconos y variedad visual         |
+| Naranja              | `#F97316` | Iconos y alertas                 |
+| Gris fondo           | `#f5f6fa` | Fondos de secciones              |
 
 ---
 
@@ -214,20 +218,23 @@ Antes de instalar, asegúrate de tener:
 ## 🔧 Solución de Problemas
 
 ### Error de CORS
+
 Si ves errores de CORS en la consola del navegador:
+
 - Verifica que Apache esté corriendo en XAMPP
 - Asegúrate de que la carpeta backend esté en `C:/xampp/htdocs/bookit/backend/`
 - Revisa que el archivo `conexion.php` tenga los headers de CORS correctos
 
 ### Error de conexión a MySQL
+
 - Verifica que MySQL esté corriendo en XAMPP
 - Asegúrate de que la base de datos `bookit` existe
 - Revisa las credenciales en `conexion.php`
 
 ### El dashboard muestra datos de ejemplo
-Si el backend no está conectado, el dashboard muestra datos estáticos de ejemplo. Esto es normal para poder ver la interfaz sin backend. Los datos reales se cargarán cuando el backend esté configurado correctamente.
 
 Si el backend no está conectado, el dashboard muestra datos estáticos de ejemplo. Esto es normal para poder ver la interfaz sin backend. Los datos reales se cargarán cuando el backend esté configurado correctamente.
 
+Si el backend no está conectado, el dashboard muestra datos estáticos de ejemplo. Esto es normal para poder ver la interfaz sin backend. Los datos reales se cargarán cuando el backend esté configurado correctamente.
 
 git push origin main

@@ -3,47 +3,142 @@
  * BOOKIT - Componente VistaReservas
  * Archivo: componentes/Dashboard/VistaReservas.js
  * ============================================
- * 
+ *
  * Propósito: Módulo completo de gestión de reservas.
  * Muestra tabla con todas las reservas, filtros por estado,
  * búsqueda, y acciones (confirmar, cancelar, eliminar).
  */
 
-import React, { useState, useEffect } from 'react';
-import Boton from '../Compartidos/Boton';
+import React, { useState, useEffect } from "react";
+import Boton from "../Compartidos/Boton";
 import {
   obtenerTodasReservas,
   actualizarReserva,
   eliminarReserva,
   obtenerTodosClientes,
   crearReserva,
-} from '../../servicios/api';
-import ModalNuevaReserva from './ModalNuevaReserva';
-import { useNotificaciones } from '../../contextos/NotificacionesContext';
+} from "../../servicios/api";
+import ModalNuevaReserva from "./ModalNuevaReserva";
+import { useNotificaciones } from "../../contextos/NotificacionesContext";
 
 // Datos de ejemplo cuando el backend no responde
 const reservasEjemplo = [
-  { id: 1, cliente_nombre: 'Carlos Rodríguez', cliente_telefono: '3001234567', cliente_email: 'carlos@email.com', numero_personas: 4, fecha: '2026-02-08', hora: '19:00:00', estado: 'confirmada', mesa_numero: 5, notas_especiales: 'Cumpleaños' },
-  { id: 2, cliente_nombre: 'María González', cliente_telefono: '3009876543', cliente_email: 'maria@email.com', numero_personas: 2, fecha: '2026-02-08', hora: '19:30:00', estado: 'pendiente', mesa_numero: 3, notas_especiales: '' },
-  { id: 3, cliente_nombre: 'Ana López', cliente_telefono: '3005551234', cliente_email: 'ana@email.com', numero_personas: 6, fecha: '2026-02-08', hora: '20:00:00', estado: 'confirmada', mesa_numero: 8, notas_especiales: 'Alergia al maní' },
-  { id: 4, cliente_nombre: 'Juan Pérez', cliente_telefono: '3007778899', cliente_email: 'juan@email.com', numero_personas: 3, fecha: '2026-02-09', hora: '20:30:00', estado: 'pendiente', mesa_numero: null, notas_especiales: '' },
-  { id: 5, cliente_nombre: 'Laura Martínez', cliente_telefono: '3002223344', cliente_email: 'laura@email.com', numero_personas: 5, fecha: '2026-02-09', hora: '21:00:00', estado: 'confirmada', mesa_numero: 12, notas_especiales: 'Silla para bebé' },
-  { id: 6, cliente_nombre: 'Pedro Sánchez', cliente_telefono: '3006667788', cliente_email: 'pedro@email.com', numero_personas: 2, fecha: '2026-02-10', hora: '13:00:00', estado: 'cancelada', mesa_numero: 2, notas_especiales: '' },
-  { id: 7, cliente_nombre: 'Sofía Ramírez', cliente_telefono: '3004445566', cliente_email: 'sofia@email.com', numero_personas: 8, fecha: '2026-02-10', hora: '20:00:00', estado: 'confirmada', mesa_numero: 15, notas_especiales: 'Reunión de negocios' },
-  { id: 8, cliente_nombre: 'Diego Torres', cliente_telefono: '3008889900', cliente_email: 'diego@email.com', numero_personas: 4, fecha: '2026-02-11', hora: '19:00:00', estado: 'pendiente', mesa_numero: 6, notas_especiales: '' },
+  {
+    id: 1,
+    cliente_nombre: "Carlos Rodríguez",
+    cliente_telefono: "3001234567",
+    cliente_email: "carlos@email.com",
+    numero_personas: 4,
+    fecha: "2026-02-08",
+    hora: "19:00:00",
+    estado: "confirmada",
+    mesa_numero: 5,
+    notas_especiales: "Cumpleaños",
+  },
+  {
+    id: 2,
+    cliente_nombre: "María González",
+    cliente_telefono: "3009876543",
+    cliente_email: "maria@email.com",
+    numero_personas: 2,
+    fecha: "2026-02-08",
+    hora: "19:30:00",
+    estado: "pendiente",
+    mesa_numero: 3,
+    notas_especiales: "",
+  },
+  {
+    id: 3,
+    cliente_nombre: "Ana López",
+    cliente_telefono: "3005551234",
+    cliente_email: "ana@email.com",
+    numero_personas: 6,
+    fecha: "2026-02-08",
+    hora: "20:00:00",
+    estado: "confirmada",
+    mesa_numero: 8,
+    notas_especiales: "Alergia al maní",
+  },
+  {
+    id: 4,
+    cliente_nombre: "Juan Pérez",
+    cliente_telefono: "3007778899",
+    cliente_email: "juan@email.com",
+    numero_personas: 3,
+    fecha: "2026-02-09",
+    hora: "20:30:00",
+    estado: "pendiente",
+    mesa_numero: null,
+    notas_especiales: "",
+  },
+  {
+    id: 5,
+    cliente_nombre: "Laura Martínez",
+    cliente_telefono: "3002223344",
+    cliente_email: "laura@email.com",
+    numero_personas: 5,
+    fecha: "2026-02-09",
+    hora: "21:00:00",
+    estado: "confirmada",
+    mesa_numero: 12,
+    notas_especiales: "Silla para bebé",
+  },
+  {
+    id: 6,
+    cliente_nombre: "Pedro Sánchez",
+    cliente_telefono: "3006667788",
+    cliente_email: "pedro@email.com",
+    numero_personas: 2,
+    fecha: "2026-02-10",
+    hora: "13:00:00",
+    estado: "cancelada",
+    mesa_numero: 2,
+    notas_especiales: "",
+  },
+  {
+    id: 7,
+    cliente_nombre: "Sofía Ramírez",
+    cliente_telefono: "3004445566",
+    cliente_email: "sofia@email.com",
+    numero_personas: 8,
+    fecha: "2026-02-10",
+    hora: "20:00:00",
+    estado: "confirmada",
+    mesa_numero: 15,
+    notas_especiales: "Reunión de negocios",
+  },
+  {
+    id: 8,
+    cliente_nombre: "Diego Torres",
+    cliente_telefono: "3008889900",
+    cliente_email: "diego@email.com",
+    numero_personas: 4,
+    fecha: "2026-02-11",
+    hora: "19:00:00",
+    estado: "pendiente",
+    mesa_numero: 6,
+    notas_especiales: "",
+  },
 ];
 
-const coloresAvatar = ['#4A90E2', '#8B5CF6', '#10B981', '#FDB022', '#EC4899', '#F97316'];
+const coloresAvatar = [
+  "#4A90E2",
+  "#8B5CF6",
+  "#10B981",
+  "#FDB022",
+  "#EC4899",
+  "#F97316",
+];
 
 const VistaReservas = () => {
   const [reservas, setReservas] = useState([]);
   const [clientes, setClientes] = useState([]);
-  const [filtroEstado, setFiltroEstado] = useState('todas');
-  const [busqueda, setBusqueda] = useState('');
+  const [filtroEstado, setFiltroEstado] = useState("todas");
+  const [busqueda, setBusqueda] = useState("");
   const [cargando, setCargando] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [reservaDetalle, setReservaDetalle] = useState(null);
-  const [modalModo, setModalModo] = useState('crear'); // 'crear' | 'editar'
+  const [modalModo, setModalModo] = useState("crear"); // 'crear' | 'editar'
   const { agregarNotificacion } = useNotificaciones();
 
   useEffect(() => {
@@ -57,7 +152,7 @@ const VistaReservas = () => {
       const datos = await obtenerTodasReservas();
       setReservas(datos);
     } catch (error) {
-      console.error('Error al cargar reservas:', error);
+      console.error("Error al cargar reservas:", error);
       setReservas(reservasEjemplo);
     } finally {
       setCargando(false);
@@ -69,92 +164,139 @@ const VistaReservas = () => {
       const datos = await obtenerTodosClientes();
       setClientes(datos);
     } catch (error) {
-      console.error('Error al cargar clientes:', error);
+      console.error("Error al cargar clientes:", error);
     }
   };
 
   const manejarCambiarEstado = async (id, nuevoEstado) => {
-    const reserva = reservas.find(r => r.id === id);
-    const nombre = reserva?.cliente_nombre || reserva?.cliente || 'Reserva #' + id;
-    const estadoTexto = { confirmada: 'confirmada', cancelada: 'cancelada', pendiente: 'marcada como pendiente', completada: 'completada' };
+    const reserva = reservas.find((r) => r.id === id);
+    const nombre =
+      reserva?.cliente_nombre || reserva?.cliente || "Reserva #" + id;
+    const estadoTexto = {
+      confirmada: "confirmada",
+      cancelada: "cancelada",
+      pendiente: "marcada como pendiente",
+      completada: "completada",
+    };
     try {
       await actualizarReserva(id, nuevoEstado);
-      agregarNotificacion('reserva', `Reserva ${estadoTexto[nuevoEstado] || nuevoEstado}`, `La reserva de ${nombre} ha sido ${estadoTexto[nuevoEstado] || nuevoEstado}`);
+      agregarNotificacion(
+        "reserva",
+        `Reserva ${estadoTexto[nuevoEstado] || nuevoEstado}`,
+        `La reserva de ${nombre} ha sido ${estadoTexto[nuevoEstado] || nuevoEstado}`,
+      );
       cargarReservas();
     } catch (error) {
-      setReservas(prev => prev.map(r => r.id === id ? { ...r, estado: nuevoEstado } : r));
-      agregarNotificacion('reserva', `Reserva ${estadoTexto[nuevoEstado] || nuevoEstado}`, `La reserva de ${nombre} ha sido ${estadoTexto[nuevoEstado] || nuevoEstado}`);
+      setReservas((prev) =>
+        prev.map((r) => (r.id === id ? { ...r, estado: nuevoEstado } : r)),
+      );
+      agregarNotificacion(
+        "reserva",
+        `Reserva ${estadoTexto[nuevoEstado] || nuevoEstado}`,
+        `La reserva de ${nombre} ha sido ${estadoTexto[nuevoEstado] || nuevoEstado}`,
+      );
     }
   };
 
   const manejarEliminar = async (id) => {
-    if (!window.confirm('¿Estás seguro de eliminar esta reserva?')) return;
-    const reserva = reservas.find(r => r.id === id);
-    const nombre = reserva?.cliente_nombre || reserva?.cliente || 'Reserva #' + id;
+    if (!window.confirm("¿Estás seguro de eliminar esta reserva?")) return;
+    const reserva = reservas.find((r) => r.id === id);
+    const nombre =
+      reserva?.cliente_nombre || reserva?.cliente || "Reserva #" + id;
     try {
       await eliminarReserva(id);
-      agregarNotificacion('reserva', 'Reserva eliminada', `La reserva de ${nombre} ha sido eliminada del sistema`);
+      agregarNotificacion(
+        "reserva",
+        "Reserva eliminada",
+        `La reserva de ${nombre} ha sido eliminada del sistema`,
+      );
       cargarReservas();
     } catch (error) {
-      setReservas(prev => prev.filter(r => r.id !== id));
-      agregarNotificacion('reserva', 'Reserva eliminada', `La reserva de ${nombre} ha sido eliminada del sistema`);
+      setReservas((prev) => prev.filter((r) => r.id !== id));
+      agregarNotificacion(
+        "reserva",
+        "Reserva eliminada",
+        `La reserva de ${nombre} ha sido eliminada del sistema`,
+      );
     }
   };
 
   const manejarCrearReserva = async (datosReserva) => {
     await crearReserva(datosReserva);
-    agregarNotificacion('reserva', 'Nueva reserva creada', `Reserva para ${datosReserva.numero_personas} personas el ${datosReserva.fecha} a las ${datosReserva.hora}`);
+    agregarNotificacion(
+      "reserva",
+      "Nueva reserva creada",
+      `Reserva para ${datosReserva.numero_personas} personas el ${datosReserva.fecha} a las ${datosReserva.hora}`,
+    );
     cargarReservas();
   };
 
   const manejarActualizar = async (id, datosReserva) => {
     try {
       await actualizarReserva(id, datosReserva);
-      agregarNotificacion('reserva', 'Reserva actualizada', `Reserva actualizada correctamente`);
+      agregarNotificacion(
+        "reserva",
+        "Reserva actualizada",
+        `Reserva actualizada correctamente`,
+      );
       cargarReservas();
     } catch (error) {
       // Intentar fallback local
-      setReservas(prev => prev.map(r => r.id === id ? { ...r, ...datosReserva } : r));
-      agregarNotificacion('reserva', 'Reserva actualizada', `Reserva actualizada correctamente`);
+      setReservas((prev) =>
+        prev.map((r) => (r.id === id ? { ...r, ...datosReserva } : r)),
+      );
+      agregarNotificacion(
+        "reserva",
+        "Reserva actualizada",
+        `Reserva actualizada correctamente`,
+      );
     }
   };
 
   // Filtrar reservas
-  const reservasFiltradas = reservas.filter(r => {
-    const coincideEstado = filtroEstado === 'todas' || r.estado === filtroEstado;
-    const coincideBusqueda = !busqueda || 
-      (r.cliente_nombre || r.cliente || '').toLowerCase().includes(busqueda.toLowerCase()) ||
-      (r.cliente_telefono || '').includes(busqueda) ||
-      (r.fecha || '').includes(busqueda);
+  const reservasFiltradas = reservas.filter((r) => {
+    const coincideEstado =
+      filtroEstado === "todas" || r.estado === filtroEstado;
+    const coincideBusqueda =
+      !busqueda ||
+      (r.cliente_nombre || r.cliente || "")
+        .toLowerCase()
+        .includes(busqueda.toLowerCase()) ||
+      (r.cliente_telefono || "").includes(busqueda) ||
+      (r.fecha || "").includes(busqueda);
     return coincideEstado && coincideBusqueda;
   });
 
   // Contar por estado
   const contarEstado = (estado) => {
-    if (estado === 'todas') return reservas.length;
-    return reservas.filter(r => r.estado === estado).length;
+    if (estado === "todas") return reservas.length;
+    return reservas.filter((r) => r.estado === estado).length;
   };
 
   const formatearFecha = (fecha) => {
-    if (!fecha) return '';
-    const d = new Date(fecha + 'T00:00:00');
-    return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+    if (!fecha) return "";
+    const d = new Date(fecha + "T00:00:00");
+    return d.toLocaleDateString("es-ES", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
   };
 
   const formatearHora = (hora) => {
-    if (!hora) return '';
+    if (!hora) return "";
     return hora.substring(0, 5);
   };
 
   const obtenerInicial = (nombre) => {
-    return nombre ? nombre[0].toUpperCase() : '?';
+    return nombre ? nombre[0].toUpperCase() : "?";
   };
 
   const estadoTexto = {
-    confirmada: 'Confirmada',
-    pendiente: 'Pendiente',
-    cancelada: 'Cancelada',
-    completada: 'Completada',
+    confirmada: "Confirmada",
+    pendiente: "Pendiente",
+    cancelada: "Cancelada",
+    completada: "Completada",
   };
 
   return (
@@ -165,7 +307,15 @@ const VistaReservas = () => {
           <h1 className="dashboard-titulo">Reservas</h1>
           <p className="dashboard-fecha">{reservas.length} reservas en total</p>
         </div>
-        <Boton variante="primario" className="btn-nueva-reserva" onClick={() => { setReservaDetalle(null); setModalModo('crear'); setModalVisible(true); }}>
+        <Boton
+          variante="primario"
+          className="btn-nueva-reserva"
+          onClick={() => {
+            setReservaDetalle(null);
+            setModalModo("crear");
+            setModalVisible(true);
+          }}
+        >
           + Nueva Reserva
         </Boton>
       </div>
@@ -173,15 +323,15 @@ const VistaReservas = () => {
       {/* Filtros por estado */}
       <div className="reservas-filtros">
         {[
-          { clave: 'todas', label: 'Todas' },
-          { clave: 'pendiente', label: 'Pendientes' },
-          { clave: 'confirmada', label: 'Confirmadas' },
-          { clave: 'cancelada', label: 'Canceladas' },
-        ].map(filtro => (
+          { clave: "todas", label: "Todas" },
+          { clave: "pendiente", label: "Pendientes" },
+          { clave: "confirmada", label: "Confirmadas" },
+          { clave: "cancelada", label: "Canceladas" },
+        ].map((filtro) => (
           <Boton
             key={filtro.clave}
-            variante={filtroEstado === filtro.clave ? 'primario' : 'secundario'}
-            className={`filtro-btn ${filtroEstado === filtro.clave ? 'filtro-activo' : ''}`}
+            variante={filtroEstado === filtro.clave ? "primario" : "secundario"}
+            className={`filtro-btn ${filtroEstado === filtro.clave ? "filtro-activo" : ""}`}
             onClick={() => setFiltroEstado(filtro.clave)}
           >
             {filtro.label}
@@ -193,9 +343,23 @@ const VistaReservas = () => {
       {/* Barra de búsqueda */}
       <div className="reservas-busqueda">
         <span className="reservas-busqueda-icono">
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <circle cx="9" cy="9" r="7" stroke="#FDB022" strokeWidth="2" />
-            <line x1="14.4142" y1="14" x2="18" y2="17.5858" stroke="#FDB022" strokeWidth="2" strokeLinecap="round" />
+            <line
+              x1="14.4142"
+              y1="14"
+              x2="18"
+              y2="17.5858"
+              stroke="#FDB022"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
           </svg>
         </span>
         <input
@@ -214,8 +378,15 @@ const VistaReservas = () => {
           </div>
         ) : reservasFiltradas.length === 0 ? (
           <div className="reservas-vacio">
-            <div style={{ textAlign: 'center', padding: '24px', color: '#718096' }}>
-              <img src="https://img.icons8.com/ios-filled/48/1a1a2e/calendar--v1.png" alt="sin reservas" width="48" height="48" />
+            <div
+              style={{ textAlign: "center", padding: "24px", color: "#718096" }}
+            >
+              <img
+                src="https://img.icons8.com/ios-filled/48/1a1a2e/calendar--v1.png"
+                alt="sin reservas"
+                width="48"
+                height="48"
+              />
               <p style={{ marginTop: 12 }}>No se encontraron reservas</p>
             </div>
           </div>
@@ -240,28 +411,52 @@ const VistaReservas = () => {
                     <div className="tabla-cliente">
                       <div
                         className="tabla-avatar"
-                        style={{ backgroundColor: coloresAvatar[indice % coloresAvatar.length] }}
+                        style={{
+                          backgroundColor:
+                            coloresAvatar[indice % coloresAvatar.length],
+                        }}
                       >
-                        {obtenerInicial(reserva.cliente_nombre || reserva.cliente)}
+                        {obtenerInicial(
+                          reserva.cliente_nombre || reserva.cliente,
+                        )}
                       </div>
                       <div className="tabla-cliente-info">
-                        <span className="tabla-cliente-nombre">{reserva.cliente_nombre || reserva.cliente}</span>
-                        <span className="tabla-cliente-tel">{reserva.cliente_telefono || ''}</span>
+                        <span className="tabla-cliente-nombre">
+                          {reserva.cliente_nombre || reserva.cliente}
+                        </span>
+                        <span className="tabla-cliente-tel">
+                          {reserva.cliente_telefono || ""}
+                        </span>
                       </div>
                     </div>
                   </td>
-                  <td className="tabla-fecha">{formatearFecha(reserva.fecha)}</td>
+                  <td className="tabla-fecha">
+                    {formatearFecha(reserva.fecha)}
+                  </td>
                   <td className="tabla-hora">{formatearHora(reserva.hora)}</td>
                   <td className="tabla-personas">
                     <span className="personas-badge">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false" className="icon-personas" role="img" aria-label="Personas">
-                        <path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        width="14"
+                        height="14"
+                        aria-hidden="true"
+                        focusable="false"
+                        className="icon-personas"
+                        role="img"
+                        aria-label="Personas"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z"
+                        />
                       </svg>
                       {reserva.numero_personas}
                     </span>
                   </td>
                   <td className="tabla-mesa">
-                    {reserva.mesa_numero ? `Mesa ${reserva.mesa_numero}` : '—'}
+                    {reserva.mesa_numero ? `Mesa ${reserva.mesa_numero}` : "—"}
                   </td>
                   <td>
                     <span className={`reserva-estado estado-${reserva.estado}`}>
@@ -270,37 +465,125 @@ const VistaReservas = () => {
                   </td>
                   <td className="tabla-notas">
                     {reserva.notas_especiales ? (
-                        <span className="notas-badge" title={reserva.notas_especiales}>
-                        <img src="https://img.icons8.com/ios-filled/14/1a1a2e/note.png" alt="nota" width="14" height="14" style={{verticalAlign: 'middle', marginRight: 6}} />{reserva.notas_especiales.substring(0, 20)}{reserva.notas_especiales.length > 20 ? '...' : ''}
+                      <span
+                        className="notas-badge"
+                        title={reserva.notas_especiales}
+                      >
+                        <img
+                          src="https://img.icons8.com/ios-filled/14/1a1a2e/note.png"
+                          alt="nota"
+                          width="14"
+                          height="14"
+                          style={{ verticalAlign: "middle", marginRight: 6 }}
+                        />
+                        {reserva.notas_especiales.substring(0, 20)}
+                        {reserva.notas_especiales.length > 20 ? "..." : ""}
                       </span>
-                    ) : '—'}
+                    ) : (
+                      "—"
+                    )}
                   </td>
                   <td>
                     <div className="tabla-acciones">
                       {/* Mostrar siempre el botón Confirmar pero deshabilitado cuando ya está confirmada o cancelada */}
                       <Boton
                         variante="ghost"
-                        className={`accion-btn accion-confirmar ${reserva.estado === 'confirmada' || reserva.estado === 'cancelada' ? 'accion-confirmar--disabled' : ''}`}
-                        onClick={() => { if (reserva.estado !== 'confirmada' && reserva.estado !== 'cancelada') manejarCambiarEstado(reserva.id, 'confirmada'); }}
+                        className={`accion-btn accion-confirmar ${
+                          reserva.estado === "confirmada" ||
+                          reserva.estado === "cancelada"
+                            ? "accion-confirmar--disabled"
+                            : "accion-confirmar--activo"
+                        }`}
+                        onClick={() => {
+                          if (
+                            reserva.estado !== "confirmada" &&
+                            reserva.estado !== "cancelada"
+                          )
+                            manejarCambiarEstado(reserva.id, "confirmada");
+                        }}
                         title="Confirmar reserva"
                         aria-label="Confirmar reserva"
-                        disabled={reserva.estado === 'confirmada' || reserva.estado === 'cancelada'}
+                        disabled={
+                          reserva.estado === "confirmada" ||
+                          reserva.estado === "cancelada"
+                        }
+                        style={{
+                          padding: "0",
+                          width: "36px",
+                          height: "36px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background:
+                            reserva.estado !== "confirmada" &&
+                            reserva.estado !== "cancelada"
+                              ? undefined
+                              : undefined,
+                          borderRadius: "8px",
+                        }}
                       >
-                        <svg width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-                          <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                        </svg>
+                        <img
+                          src={
+                            reserva.estado !== "confirmada" &&
+                            reserva.estado !== "cancelada"
+                              ? "https://img.icons8.com/ios-filled/50/00D600/checkmark--v1.png"
+                              : "https://img.icons8.com/ios-filled/20/10B981/checkmark.png"
+                          }
+                          alt="confirmar"
+                          width="20"
+                          height="20"
+                          style={{ display: "block" }}
+                        />
                       </Boton>
-
-                      {/* Editar: siempre visible */}
-                      <Boton variante="ghost" className="accion-btn accion-editar" onClick={() => { setReservaDetalle(reserva); setModalModo('editar'); setModalVisible(true); }} title="Editar" aria-label="Editar reserva">
-                        <svg width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-                          <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.41l-2.34-2.34a1.003 1.003 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
-                        </svg>
+                      <Boton
+                        variante="ghost"
+                        className="accion-btn accion-editar"
+                        onClick={() => {
+                          setReservaDetalle(reserva);
+                          setModalModo("editar");
+                          setModalVisible(true);
+                        }}
+                        title="Editar"
+                        aria-label="Editar reserva"
+                        style={{
+                          padding: "0",
+                          width: "36px",
+                          height: "36px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <img
+                          src="https://img.icons8.com/ios-filled/20/4A90E2/edit.png"
+                          alt="editar"
+                          width="20"
+                          height="20"
+                          style={{ display: "block" }}
+                        />
                       </Boton>
-                      <Boton variante="peligro" className="accion-btn accion-eliminar" onClick={() => manejarEliminar(reserva.id)} title="Eliminar" aria-label="Eliminar reserva">
-                        <svg width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-                          <path fill="currentColor" d="M9 3v1H4v2h16V4h-5V3H9zm2 5v9h2V8h-2zM7 8v9h2V8H7zm8 0v9h2V8h-2z" />
-                        </svg>
+                      <Boton
+                        variante="peligro"
+                        className="accion-btn accion-eliminar"
+                        onClick={() => manejarEliminar(reserva.id)}
+                        title="Eliminar"
+                        aria-label="Eliminar reserva"
+                        style={{
+                          padding: "0",
+                          width: "36px",
+                          height: "36px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <img
+                          src="https://img.icons8.com/ios-filled/20/EF4444/trash.png"
+                          alt="eliminar"
+                          width="20"
+                          height="20"
+                          style={{ display: "block" }}
+                        />
                       </Boton>
                     </div>
                   </td>
@@ -315,15 +598,15 @@ const VistaReservas = () => {
       <div className="reservas-resumen">
         <div className="resumen-item">
           <span className="resumen-dot resumen-pendiente"></span>
-          <span>{contarEstado('pendiente')} pendientes</span>
+          <span>{contarEstado("pendiente")} pendientes</span>
         </div>
         <div className="resumen-item">
           <span className="resumen-dot resumen-confirmada"></span>
-          <span>{contarEstado('confirmada')} confirmadas</span>
+          <span>{contarEstado("confirmada")} confirmadas</span>
         </div>
         <div className="resumen-item">
           <span className="resumen-dot resumen-cancelada"></span>
-          <span>{contarEstado('cancelada')} canceladas</span>
+          <span>{contarEstado("cancelada")} canceladas</span>
         </div>
       </div>
 

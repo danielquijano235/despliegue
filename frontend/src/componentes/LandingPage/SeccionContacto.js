@@ -3,50 +3,49 @@
  * BOOKIT - Componente SeccionContacto
  * Archivo: componentes/LandingPage/SeccionContacto.js
  * ============================================
- * 
+ *
  * Propósito: Sección de contacto en la landing page.
  * Layout de dos columnas:
  *   - Izquierda: Información de contacto (tarjetas con icono)
  *   - Derecha: Formulario para enviar mensaje
- * 
+ *
  * Estados:
  *   - formulario: Objeto con los campos del formulario
  *   - enviando: Indica si se está procesando el envío
  *   - enviado: Controla el mensaje de éxito después de enviar
  */
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 // Datos de las tarjetas de información de contacto
 const infoContacto = [
   {
-    icono: 'https://img.icons8.com/ios-filled/24/FDB022/marker.png',
-    titulo: 'Ubicación',
-    linea1: 'SENA-comercio',
-    linea2: 'RIONEGRO, ANTIOQUIA',
+    icono: "https://img.icons8.com/ios-filled/24/FDB022/marker.png",
+    titulo: "Ubicación",
+    linea1: "SENA-comercio",
+    linea2: "RIONEGRO, ANTIOQUIA",
   },
   {
-    icono: 'https://img.icons8.com/ios-filled/24/FDB022/phone.png',
-    titulo: 'Teléfono',
-    linea1: '+57 305 435 2689',
-    linea2: '+57 322 219 5864',
+    icono: "https://img.icons8.com/ios-filled/24/FDB022/phone.png",
+    titulo: "Teléfono",
+    linea1: "+57 305 435 2689",
+    linea2: "+57 322 219 5864",
   },
   {
-    icono: 'https://img.icons8.com/ios-filled/24/FDB022/email.png',
-    titulo: 'Email',
-    linea1: 'contacto@bookit.com',
-    linea2: 'soporte@bookit.com',
+    icono: "https://img.icons8.com/ios-filled/24/FDB022/email.png",
+    titulo: "Email",
+    linea1: "contacto@bookit.com",
+    linea2: "soporte@bookit.com",
   },
-
 ];
 
 const SeccionContacto = () => {
   // Estado del formulario con todos los campos
   const [formulario, setFormulario] = useState({
-    nombre: '',
-    email: '',
-    asunto: '',
-    mensaje: '',
+    nombre: "",
+    email: "",
+    asunto: "",
+    mensaje: "",
   });
   const [enviando, setEnviando] = useState(false);
   const [enviado, setEnviado] = useState(false);
@@ -57,7 +56,7 @@ const SeccionContacto = () => {
    */
   const manejarCambio = (e) => {
     const { name, value } = e.target;
-    setFormulario(prev => ({ ...prev, [name]: value }));
+    setFormulario((prev) => ({ ...prev, [name]: value }));
   };
 
   /**
@@ -73,7 +72,7 @@ const SeccionContacto = () => {
       setEnviando(false);
       setEnviado(true);
       // Limpiar formulario
-      setFormulario({ nombre: '', email: '', asunto: '', mensaje: '' });
+      setFormulario({ nombre: "", email: "", asunto: "", mensaje: "" });
 
       // Ocultar mensaje de éxito después de 4 segundos
       setTimeout(() => setEnviado(false), 4000);
@@ -87,7 +86,8 @@ const SeccionContacto = () => {
         <span className="seccion-badge">CONTACTO</span>
         <h2 className="seccion-titulo">¿Tienes alguna pregunta?</h2>
         <p className="seccion-subtitulo">
-          Estamos aquí para ayudarte. Envíanos un mensaje y te responderemos lo antes posible.
+          Estamos aquí para ayudarte. Envíanos un mensaje y te responderemos lo
+          antes posible.
         </p>
       </div>
 
@@ -98,7 +98,8 @@ const SeccionContacto = () => {
           <div className="contacto-info-header">
             <h3 className="contacto-info-titulo">Información de Contacto</h3>
             <p className="contacto-info-subtitulo">
-              Contáctanos por cualquiera de estos medios o completa el formulario.
+              Contáctanos por cualquiera de estos medios o completa el
+              formulario.
             </p>
           </div>
 
@@ -107,7 +108,12 @@ const SeccionContacto = () => {
             {infoContacto.map((info, indice) => (
               <div className="contacto-tarjeta" key={indice}>
                 <div className="contacto-tarjeta-icono">
-                  <img src={info.icono} alt={info.titulo} width="24" height="24" />
+                  <img
+                    src={info.icono}
+                    alt={info.titulo}
+                    width="24"
+                    height="24"
+                  />
                 </div>
                 <div className="contacto-tarjeta-texto">
                   <span className="contacto-tarjeta-titulo">{info.titulo}</span>
@@ -123,16 +129,28 @@ const SeccionContacto = () => {
             <span className="contacto-redes-titulo">Síguenos</span>
             <div className="contacto-redes-iconos">
               <a href="#" className="contacto-red" aria-label="Facebook">
-                <img src="https://img.icons8.com/ios-filled/20/ffffff/facebook-new.png" alt="Facebook" />
+                <img
+                  src="https://img.icons8.com/ios-filled/20/ffffff/facebook-new.png"
+                  alt="Facebook"
+                />
               </a>
               <a href="#" className="contacto-red" aria-label="Instagram">
-                <img src="https://img.icons8.com/ios-filled/20/ffffff/instagram-new.png" alt="Instagram" />
+                <img
+                  src="https://img.icons8.com/ios-filled/20/ffffff/instagram-new.png"
+                  alt="Instagram"
+                />
               </a>
               <a href="#" className="contacto-red" aria-label="Twitter">
-                <img src="https://img.icons8.com/ios-filled/20/ffffff/twitter.png" alt="Twitter" />
+                <img
+                  src="https://img.icons8.com/ios-filled/20/ffffff/twitter.png"
+                  alt="Twitter"
+                />
               </a>
               <a href="#" className="contacto-red" aria-label="LinkedIn">
-                <img src="https://img.icons8.com/ios-filled/20/ffffff/linkedin.png" alt="LinkedIn" />
+                <img
+                  src="https://img.icons8.com/ios-filled/20/ffffff/linkedin.png"
+                  alt="LinkedIn"
+                />
               </a>
             </div>
           </div>
@@ -143,8 +161,15 @@ const SeccionContacto = () => {
           {/* Mensaje de éxito */}
           {enviado && (
             <div className="contacto-exito">
-              <img src="https://img.icons8.com/ios-filled/28/10B981/checkmark--v1.png" alt="ok" width="28" height="28" />
-              <span>¡Mensaje enviado correctamente! Te contactaremos pronto.</span>
+              <img
+                src="https://img.icons8.com/ios-filled/28/10B981/checkmark--v1.png"
+                alt="ok"
+                width="28"
+                height="28"
+              />
+              <span>
+                ¡Mensaje enviado correctamente! Te contactaremos pronto.
+              </span>
             </div>
           )}
 
@@ -154,7 +179,11 @@ const SeccionContacto = () => {
               <div className="contacto-campo">
                 <label className="contacto-label">Nombre completo</label>
                 <div className="contacto-input-grupo">
-                  <img src="https://img.icons8.com/ios-filled/18/999999/user.png" alt="" className="contacto-input-icono" />
+                  <img
+                    src="https://img.icons8.com/ios-filled/18/999999/user.png"
+                    alt=""
+                    className="contacto-input-icono"
+                  />
                   <input
                     type="text"
                     name="nombre"
@@ -170,7 +199,11 @@ const SeccionContacto = () => {
               <div className="contacto-campo">
                 <label className="contacto-label">Correo electrónico</label>
                 <div className="contacto-input-grupo">
-                  <img src="https://img.icons8.com/ios-filled/18/999999/email.png" alt="" className="contacto-input-icono" />
+                  <img
+                    src="https://img.icons8.com/ios-filled/18/999999/email.png"
+                    alt=""
+                    className="contacto-input-icono"
+                  />
                   <input
                     type="email"
                     name="email"
@@ -188,7 +221,11 @@ const SeccionContacto = () => {
             <div className="contacto-campo">
               <label className="contacto-label">Asunto</label>
               <div className="contacto-input-grupo">
-                <img src="https://img.icons8.com/ios-filled/18/999999/topic.png" alt="" className="contacto-input-icono" />
+                <img
+                  src="https://img.icons8.com/ios-filled/18/999999/topic.png"
+                  alt=""
+                  className="contacto-input-icono"
+                />
                 <input
                   type="text"
                   name="asunto"
@@ -229,7 +266,12 @@ const SeccionContacto = () => {
               ) : (
                 <>
                   Enviar Mensaje
-                  <img src="https://img.icons8.com/ios-filled/18/ffffff/sent.png" alt="" width="18" height="18" />
+                  <img
+                    src="https://img.icons8.com/ios-filled/18/ffffff/sent.png"
+                    alt=""
+                    width="18"
+                    height="18"
+                  />
                 </>
               )}
             </button>
@@ -238,6 +280,6 @@ const SeccionContacto = () => {
       </div>
     </section>
   );
-}
+};
 
 export default SeccionContacto;

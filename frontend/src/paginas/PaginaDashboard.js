@@ -1,20 +1,21 @@
-
-
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import BarraLateral from '../componentes/Dashboard/BarraLateral';
-import BarraSuperior from '../componentes/Dashboard/BarraSuperior';
-import TarjetaMetrica from '../componentes/Dashboard/TarjetaMetrica';
-import GraficaReservas from '../componentes/Dashboard/GraficaReservas';
-import ListaReservas from '../componentes/Dashboard/ListaReservas';
-import ModalNuevaReserva from '../componentes/Dashboard/ModalNuevaReserva';
-import VistaReservas from '../componentes/Dashboard/VistaReservas';
-import VistaClientes from '../componentes/Dashboard/VistaClientes';
-import VistaMesas from '../componentes/Dashboard/VistaMesas';
-import VistaResenas from '../componentes/Dashboard/VistaResenas';
-import VistaMenu from '../componentes/Dashboard/VistaMenu';
-import VistaAnalisis from '../componentes/Dashboard/VistaAnalisis';
-import { NotificacionesProvider, useNotificaciones } from '../contextos/NotificacionesContext';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import BarraLateral from "../componentes/Dashboard/BarraLateral";
+import BarraSuperior from "../componentes/Dashboard/BarraSuperior";
+import TarjetaMetrica from "../componentes/Dashboard/TarjetaMetrica";
+import GraficaReservas from "../componentes/Dashboard/GraficaReservas";
+import ListaReservas from "../componentes/Dashboard/ListaReservas";
+import ModalNuevaReserva from "../componentes/Dashboard/ModalNuevaReserva";
+import VistaReservas from "../componentes/Dashboard/VistaReservas";
+import VistaClientes from "../componentes/Dashboard/VistaClientes";
+import VistaMesas from "../componentes/Dashboard/VistaMesas";
+import VistaResenas from "../componentes/Dashboard/VistaResenas";
+import VistaMenu from "../componentes/Dashboard/VistaMenu";
+import VistaAnalisis from "../componentes/Dashboard/VistaAnalisis";
+import {
+  NotificacionesProvider,
+  useNotificaciones,
+} from "../contextos/NotificacionesContext";
 import {
   obtenerMetricasHoy,
   obtenerReservasSemana,
@@ -22,8 +23,8 @@ import {
   obtenerTodosClientes,
   crearReserva,
   cerrarSesion,
-} from '../servicios/api';
-import '../estilos/dashboard.css';
+} from "../servicios/api";
+import "../estilos/dashboard.css";
 
 const PaginaDashboard = () => {
   // ============================================
@@ -36,7 +37,7 @@ const PaginaDashboard = () => {
   const [clientes, setClientes] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [cargando, setCargando] = useState(true);
-  const [seccionActiva, setSeccionActiva] = useState('inicio');
+  const [seccionActiva, setSeccionActiva] = useState("inicio");
 
   const navigate = useNavigate();
   const { agregarNotificacion } = useNotificaciones();
@@ -47,7 +48,7 @@ const PaginaDashboard = () => {
   // ============================================
   useEffect(() => {
     // Obtener datos del usuario desde localStorage
-    const datosUsuario = localStorage.getItem('usuario');
+    const datosUsuario = localStorage.getItem("usuario");
     if (datosUsuario) {
       setUsuario(JSON.parse(datosUsuario));
     }
@@ -65,28 +66,29 @@ const PaginaDashboard = () => {
     try {
       // Hacer todas las peticiones al mismo tiempo con Promise.allSettled
       // Así es más rápido que hacerlas una por una
-      const [resMetricas, resGrafica, resReservas, resClientes] = await Promise.allSettled([
-        obtenerMetricasHoy(),
-        obtenerReservasSemana(),
-        obtenerProximasReservas(),
-        obtenerTodosClientes(),
-      ]);
+      const [resMetricas, resGrafica, resReservas, resClientes] =
+        await Promise.allSettled([
+          obtenerMetricasHoy(),
+          obtenerReservasSemana(),
+          obtenerProximasReservas(),
+          obtenerTodosClientes(),
+        ]);
 
       // Asignar datos si la petición fue exitosa
-      if (resMetricas.status === 'fulfilled') {
+      if (resMetricas.status === "fulfilled") {
         setMetricas(resMetricas.value);
       }
-      if (resGrafica.status === 'fulfilled') {
+      if (resGrafica.status === "fulfilled") {
         setDatosGrafica(resGrafica.value);
       }
-      if (resReservas.status === 'fulfilled') {
+      if (resReservas.status === "fulfilled") {
         setReservas(resReservas.value);
       }
-      if (resClientes.status === 'fulfilled') {
+      if (resClientes.status === "fulfilled") {
         setClientes(resClientes.value);
       }
     } catch (error) {
-      console.error('Error al cargar datos del dashboard:', error);
+      console.error("Error al cargar datos del dashboard:", error);
     } finally {
       setCargando(false);
     }
@@ -99,11 +101,11 @@ const PaginaDashboard = () => {
     try {
       await cerrarSesion();
     } catch (error) {
-      console.error('Error al cerrar sesión:', error);
+      console.error("Error al cerrar sesión:", error);
     }
     // Limpiar localStorage y redirigir al login
-    localStorage.removeItem('usuario');
-    navigate('/login');
+    localStorage.removeItem("usuario");
+    navigate("/login");
   };
 
   /**
@@ -113,11 +115,13 @@ const PaginaDashboard = () => {
   const manejarCrearReserva = async (datosReserva) => {
     await crearReserva(datosReserva);
     // Notificar que se creó una reserva
-    const clienteNombre = clientes.find(c => c.id == datosReserva.cliente_id)?.nombre || 'Cliente';
+    const clienteNombre =
+      clientes.find((c) => c.id == datosReserva.cliente_id)?.nombre ||
+      "Cliente";
     agregarNotificacion(
-      'reserva',
-      'Nueva reserva creada',
-      `${clienteNombre} — ${datosReserva.fecha} a las ${datosReserva.hora} (${datosReserva.numero_personas} personas)`
+      "reserva",
+      "Nueva reserva creada",
+      `${clienteNombre} — ${datosReserva.fecha} a las ${datosReserva.hora} (${datosReserva.numero_personas} personas)`,
     );
     // Recargar los datos para reflejar la nueva reserva
     cargarDatos();
@@ -129,12 +133,12 @@ const PaginaDashboard = () => {
    */
   const obtenerFechaFormateada = () => {
     const opciones = {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     };
-    const fecha = new Date().toLocaleDateString('es-ES', opciones);
+    const fecha = new Date().toLocaleDateString("es-ES", opciones);
     // Capitalizar primera letra
     return fecha.charAt(0).toUpperCase() + fecha.slice(1);
   };
@@ -144,7 +148,7 @@ const PaginaDashboard = () => {
    * Ejemplo: 3380000 -> "$3,380,000"
    */
   const formatearMoneda = (numero) => {
-    return '$' + Number(numero).toLocaleString('es-CO');
+    return "$" + Number(numero).toLocaleString("es-CO");
   };
 
   // ============================================
@@ -159,21 +163,51 @@ const PaginaDashboard = () => {
   };
 
   const graficaPorDefecto = {
-    'Lun': 45,
-    'Mar': 52,
-    'Mié': 61,
-    'Jue': 58,
-    'Vie': 78,
-    'Sáb': 95,
-    'Dom': 88,
+    Lun: 45,
+    Mar: 52,
+    Mié: 61,
+    Jue: 58,
+    Vie: 78,
+    Sáb: 95,
+    Dom: 88,
   };
 
   const reservasPorDefecto = [
-    { id: 1, cliente: 'Carlos Rodríguez', personas: 4, hora: '19:00:00', estado: 'confirmada' },
-    { id: 2, cliente: 'María González', personas: 2, hora: '19:30:00', estado: 'pendiente' },
-    { id: 3, cliente: 'Ana López', personas: 6, hora: '20:00:00', estado: 'confirmada' },
-    { id: 4, cliente: 'Juan Pérez', personas: 3, hora: '20:30:00', estado: 'confirmada' },
-    { id: 5, cliente: 'Laura Martínez', personas: 5, hora: '21:00:00', estado: 'pendiente' },
+    {
+      id: 1,
+      cliente: "Carlos Rodríguez",
+      personas: 4,
+      hora: "19:00:00",
+      estado: "confirmada",
+    },
+    {
+      id: 2,
+      cliente: "María González",
+      personas: 2,
+      hora: "19:30:00",
+      estado: "pendiente",
+    },
+    {
+      id: 3,
+      cliente: "Ana López",
+      personas: 6,
+      hora: "20:00:00",
+      estado: "confirmada",
+    },
+    {
+      id: 4,
+      cliente: "Juan Pérez",
+      personas: 3,
+      hora: "20:30:00",
+      estado: "confirmada",
+    },
+    {
+      id: 5,
+      cliente: "Laura Martínez",
+      personas: 5,
+      hora: "21:00:00",
+      estado: "pendiente",
+    },
   ];
 
   // Usar datos reales si existen, si no usar los de ejemplo
@@ -185,7 +219,9 @@ const PaginaDashboard = () => {
     <div className="dashboard">
       {/* ====== BARRA LATERAL ====== */}
       <BarraLateral
-        usuario={usuario || { nombre: 'Daniel Quijano', email: 'admin@bookit.com' }}
+        usuario={
+          usuario || { nombre: "Daniel Quijano", email: "admin@bookit.com" }
+        }
         onCerrarSesion={manejarCerrarSesion}
         seccionActiva={seccionActiva}
         onCambiarSeccion={setSeccionActiva}
@@ -198,7 +234,7 @@ const PaginaDashboard = () => {
 
         {/* Cuerpo del dashboard */}
         <main className="dashboard-cuerpo">
-          {seccionActiva === 'inicio' && (
+          {seccionActiva === "inicio" && (
             <>
               {/* Título y fecha */}
               <h1 className="dashboard-titulo">Dashboard</h1>
@@ -231,7 +267,7 @@ const PaginaDashboard = () => {
                 <TarjetaMetrica
                   titulo="Ingresos Hoy"
                   numero={formatearMoneda(metricasActuales.ingresos_hoy)}
-                  subtexto={`($${Math.round(metricasActuales.ingresos_hoy / 4000).toLocaleString()} USD)`}
+                  subtexto={`(${Math.round(metricasActuales.ingresos_hoy).toLocaleString()} COP)`}
                   badge="↑ +18%"
                   icono="https://img.icons8.com/ios-filled/20/FFFFFF/money.png"
                   colorFondo="#FDB022"
@@ -244,38 +280,39 @@ const PaginaDashboard = () => {
                 <GraficaReservas datos={graficaActual} />
 
                 {/* Lista de próximas reservas */}
-                  <ListaReservas reservas={reservasActuales} onVerTodas={() => setSeccionActiva('reservas')} />
+                <ListaReservas
+                  reservas={reservasActuales}
+                  onVerTodas={() => setSeccionActiva("reservas")}
+                />
               </div>
             </>
           )}
 
-          {seccionActiva === 'reservas' && (
-            <VistaReservas />
-          )}
+          {seccionActiva === "reservas" && <VistaReservas />}
 
-          {seccionActiva === 'clientes' && (
-            <VistaClientes />
-          )}
+          {seccionActiva === "clientes" && <VistaClientes />}
 
-          {seccionActiva === 'mesas' && (
-            <VistaMesas />
-          )}
+          {seccionActiva === "mesas" && <VistaMesas />}
 
-          {seccionActiva === 'menu' && (
-            <VistaMenu />
-          )}
+          {seccionActiva === "menu" && <VistaMenu />}
 
-          {seccionActiva === 'resenas' && (
-            <VistaResenas />
-          )}
+          {seccionActiva === "resenas" && <VistaResenas />}
 
-          {seccionActiva === 'analisis' && (
+          {seccionActiva === "analisis" && (
             <VistaAnalisis metricas={metricas} datosGrafica={datosGrafica} />
           )}
 
-          {!['inicio', 'reservas', 'clientes', 'mesas', 'menu', 'resenas', 'analisis'].includes(seccionActiva) && (
+          {![
+            "inicio",
+            "reservas",
+            "clientes",
+            "mesas",
+            "menu",
+            "resenas",
+            "analisis",
+          ].includes(seccionActiva) && (
             <div className="seccion-en-construccion">
-              <span style={{ fontSize: '3rem' }}>🚧</span>
+              <span style={{ fontSize: "3rem" }}>🚧</span>
               <h2>Sección en desarrollo</h2>
               <p>Esta sección estará disponible próximamente.</p>
             </div>

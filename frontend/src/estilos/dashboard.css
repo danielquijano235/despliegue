@@ -1,3 +1,13 @@
+/* ====== RESPONSIVE SIDEBAR ====== */
+@media (max-width: 900px) {
+  .sidebar {
+    display: none;
+  }
+  .dashboard-contenido {
+    margin-left: 0;
+  }
+}
+
 /* ====== FECHA Y HORA EN FORMULARIO DE RESERVA ====== */
 .form-fecha-hora {
   display: flex;
@@ -183,7 +193,7 @@
 
 .btn-cerrar-sesion:hover {
   background: rgba(239, 68, 68, 0.15);
-  color: #FCA5A5;
+  color: #fca5a5;
   border-color: rgba(239, 68, 68, 0.25);
 }
 
@@ -251,23 +261,58 @@
   align-items: center;
   gap: 8px;
 }
-.btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.btn--primario, .btn--primario:hover { background: var(--color-amarillo); color: var(--color-azul-oscuro); }
-.btn--primario:hover { background: var(--color-amarillo-hover); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(253,176,34,0.18); }
-.btn--secundario { background: transparent; color: var(--color-texto-claro); border: 1.5px solid var(--color-borde); }
-.btn--secundario:hover { border-color: var(--color-texto); color: var(--color-texto); }
-.btn--peligro { background: var(--color-rojo); color: white; }
-.btn--peligro:hover { background: #dc2626; transform: translateY(-1px); }
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.btn--primario,
+.btn--primario:hover {
+  background: var(--color-amarillo);
+  color: var(--color-azul-oscuro);
+}
+.btn--primario:hover {
+  background: var(--color-amarillo-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(253, 176, 34, 0.18);
+}
+.btn--secundario {
+  background: transparent;
+  color: var(--color-texto-claro);
+  border: 1.5px solid var(--color-borde);
+}
+.btn--secundario:hover {
+  border-color: var(--color-texto);
+  color: var(--color-texto);
+}
+.btn--peligro {
+  background: var(--color-rojo);
+  color: white;
+}
+.btn--peligro:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
 /* Asegurar que los iconos dentro de botones de peligro sean blancos */
 .btn--peligro img,
 .btn--peligro svg {
   /* Convierte cualquier píxel en blanco manteniendo la transparencia */
   filter: brightness(0) invert(1);
 }
-.btn--ghost { background: rgba(255,255,255,0.04); color: white; border: 1px solid rgba(255,255,255,0.06); }
-.btn--md { padding: 10px 18px; }
-.btn--lg { padding: 12px 22px; }
-.btn--sm { padding: 6px 10px; font-size: 0.85rem; }
+.btn--ghost {
+  background: rgba(255, 255, 255, 0.04);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.btn--md {
+  padding: 10px 18px;
+}
+.btn--lg {
+  padding: 12px 22px;
+}
+.btn--sm {
+  padding: 6px 10px;
+  font-size: 0.85rem;
+}
 
 .barra-acciones {
   display: flex;
@@ -312,8 +357,13 @@
 }
 
 @keyframes notifPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
 }
 
 /* ====== PANEL DE NOTIFICACIONES ====== */
@@ -329,7 +379,9 @@
   max-height: 520px;
   background: var(--color-blanco);
   border-radius: 16px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.04);
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -338,8 +390,14 @@
 }
 
 @keyframes notifSlideDown {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .notificaciones-header {
@@ -824,8 +882,12 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal {
@@ -841,8 +903,14 @@
 }
 
 @keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .modal-titulo {
@@ -1177,7 +1245,7 @@
   align-items: center !important;
   justify-content: center !important;
   border-radius: 8px !important;
-  box-shadow: 0 6px 12px rgba(16,185,129,0.18) !important;
+  box-shadow: 0 6px 12px rgba(16, 185, 129, 0.18) !important;
   z-index: 5 !important;
 }
 .reservas-tabla .tabla-acciones .btn-confirmar:hover {
@@ -1222,9 +1290,9 @@
 .accion-editar {
   background: rgba(255, 246, 224, 0.9);
   color: #2b2b2b;
-  border: 1px solid rgba(0,0,0,0.04);
+  border: 1px solid rgba(0, 0, 0, 0.04);
 }
-.accion-editar:hover{
+.accion-editar:hover {
   background: rgba(255, 233, 184, 0.95);
   transform: translateY(-1px);
 }
@@ -1255,14 +1323,14 @@
   background: var(--color-verde) !important;
   color: white !important;
   border: none !important;
-  box-shadow: 0 6px 12px rgba(16,185,129,0.18);
+  box-shadow: 0 6px 12px rgba(16, 185, 129, 0.18);
   transform: none;
-  z-index: 50 !important;
+  z-index: 10 !important;
   pointer-events: auto !important;
 }
 .reservas-tabla .accion-confirmar:hover {
   background: #0ea46f !important;
-  box-shadow: 0 8px 18px rgba(16,185,129,0.22);
+  box-shadow: 0 8px 18px rgba(16, 185, 129, 0.22);
   transform: translateY(-1px);
 }
 
@@ -1278,7 +1346,12 @@
 }
 
 /* Make sure the SVG icon is white */
-.reservas-tabla .accion-confirmar svg { fill: currentColor; width:16px; height:16px; display:block; }
+.reservas-tabla .accion-confirmar svg {
+  fill: currentColor;
+  width: 16px;
+  height: 16px;
+  display: block;
+}
 
 /* Text confirm button used in actions */
 .tabla-acciones .btn-confirmar {
@@ -1294,7 +1367,7 @@
 .tabla-acciones .btn-confirmar.btn--primario {
   background: var(--color-verde) !important;
   color: white !important;
-  box-shadow: 0 6px 12px rgba(16,185,129,0.18);
+  box-shadow: 0 6px 12px rgba(16, 185, 129, 0.18);
 }
 .tabla-acciones .btn-confirmar.btn--primario:hover {
   background: #0ea46f !important;
@@ -1306,21 +1379,27 @@
   color: var(--color-amarillo);
   border: none;
 }
-.reservas-tabla .accion-cancelar:hover { background: rgba(253,176,34,0.22); }
+.reservas-tabla .accion-cancelar:hover {
+  background: rgba(253, 176, 34, 0.22);
+}
 
 .reservas-tabla .accion-editar {
   background: rgba(255, 246, 224, 0.95);
   color: #2b2b2b;
   border: none;
 }
-.reservas-tabla .accion-editar:hover { background: rgba(255,233,184,1); }
+.reservas-tabla .accion-editar:hover {
+  background: rgba(255, 233, 184, 1);
+}
 
 .reservas-tabla .accion-eliminar {
   background: rgba(239, 68, 68, 0.1);
   color: var(--color-rojo);
   border: none;
 }
-.reservas-tabla .accion-eliminar:hover { background: rgba(239,68,68,0.2); }
+.reservas-tabla .accion-eliminar:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
 
 /* Ensure SVG icons inside action buttons render consistently */
 .accion-btn svg {
@@ -1662,9 +1741,15 @@
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
 }
 
-.mesa-tarjeta-disponible { border-top: 3px solid #10B981; }
-.mesa-tarjeta-ocupada { border-top: 3px solid #EF4444; }
-.mesa-tarjeta-reservada { border-top: 3px solid #F59E0B; }
+.mesa-tarjeta-disponible {
+  border-top: 3px solid #10b981;
+}
+.mesa-tarjeta-ocupada {
+  border-top: 3px solid #ef4444;
+}
+.mesa-tarjeta-reservada {
+  border-top: 3px solid #f59e0b;
+}
 
 .mesa-tarjeta-header {
   display: flex;
@@ -2366,7 +2451,6 @@
   cursor: pointer;
 }
 
-
 /* Botón Nuevo (usar color corporativo amarillo) */
 .btn-nuevo-plato {
   background: var(--color-amarillo);
@@ -2385,7 +2469,7 @@
 .btn-nuevo-plato:hover {
   background: var(--color-amarillo-hover);
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(253,176,34,0.25);
+  box-shadow: 0 6px 18px rgba(253, 176, 34, 0.25);
 }
 
 .btn-nuevo-plato span {
@@ -2600,7 +2684,7 @@
 }
 
 .popularidad-icono {
-  color: #FDB022;
+  color: #fdb022;
 }
 
 .plato-alergenos {
@@ -2618,7 +2702,7 @@
 
 .alergeno-tag {
   background: rgba(239, 68, 68, 0.1);
-  color: #EF4444;
+  color: #ef4444;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 0.75rem;
@@ -2763,7 +2847,7 @@
 }
 
 .checkbox-label input[type="checkbox"]:checked + .checkmark::after {
-  content: '✓';
+  content: "✓";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -2810,7 +2894,7 @@
 
 .alergeno-tag.editable button:hover {
   background: rgba(239, 68, 68, 0.1);
-  color: #EF4444;
+  color: #ef4444;
 }
 
 .modal-footer {
@@ -2850,7 +2934,7 @@
 }
 
 .btn-guardar:hover {
-  background: #E5A823;
+  background: #e5a823;
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(253, 176, 34, 0.28);
 }
@@ -2977,7 +3061,9 @@
   border-radius: 8px;
   padding: 20px;
   border-left: 4px solid #4a90e2;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .tendencia-card:hover {
@@ -3018,4 +3104,3 @@
     padding: 16px;
   }
 }
-

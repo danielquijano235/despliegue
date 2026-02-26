@@ -12,9 +12,9 @@
  *   - datosGrafica: Datos para gráficos
  */
 
-import React, { useState, useEffect } from 'react';
-import TarjetaMetrica from './TarjetaMetrica';
-import GraficaReservas from './GraficaReservas';
+import React, { useState, useEffect } from "react";
+import TarjetaMetrica from "./TarjetaMetrica";
+import GraficaReservas from "./GraficaReservas";
 
 const VistaAnalisis = ({ metricas, datosGrafica }) => {
   // ============================================
@@ -30,43 +30,47 @@ const VistaAnalisis = ({ metricas, datosGrafica }) => {
   };
 
   const datosGraficaMensual = {
-    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
-    datasets: [{
-      label: 'Reservas Mensuales',
-      data: [180, 220, 195, 240, 265, 245],
-      backgroundColor: '#4A90E2',
-      borderColor: '#4A90E2',
-      borderWidth: 1,
-    }],
+    labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun"],
+    datasets: [
+      {
+        label: "Reservas Mensuales",
+        data: [180, 220, 195, 240, 265, 245],
+        backgroundColor: "#4A90E2",
+        borderColor: "#4A90E2",
+        borderWidth: 1,
+      },
+    ],
   };
 
   const datosIngresos = {
-    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
-    datasets: [{
-      label: 'Ingresos por Semana',
-      data: [4200, 4800, 5100, 4400],
-      backgroundColor: '#10B981',
-      borderColor: '#10B981',
-      borderWidth: 1,
-    }],
+    labels: ["Sem 1", "Sem 2", "Sem 3", "Sem 4"],
+    datasets: [
+      {
+        label: "Ingresos por Semana",
+        data: [4200, 4800, 5100, 4400],
+        backgroundColor: "#10B981",
+        borderColor: "#10B981",
+        borderWidth: 1,
+      },
+    ],
   };
 
   // ============================================
   // FUNCIONES AUXILIARES
   // ============================================
   const formatearMoneda = (valor) => {
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'EUR',
+    return new Intl.NumberFormat("es-ES", {
+      style: "currency",
+      currency: "EUR",
     }).format(valor);
   };
 
   const obtenerFechaFormateada = () => {
-    return new Date().toLocaleDateString('es-ES', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    return new Date().toLocaleDateString("es-ES", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -144,20 +148,60 @@ const VistaAnalisis = ({ metricas, datosGrafica }) => {
         <h3>Análisis de Tendencias</h3>
         <div className="tendencias-grid">
           <div className="tendencia-card">
-            <h4><img src="https://img.icons8.com/ios-filled/20/1a1a2e/growth.png" alt="" style={{width:'20px', height:'20px', marginRight:'8px'}} />Crecimiento Mensual</h4>
-            <p>Las reservas han aumentado un 15% respecto al mes anterior, mostrando una tendencia positiva constante.</p>
+            <h4>
+              <img
+                src="https://img.icons8.com/ios-filled/20/1a1a2e/checked--v1.png"
+                alt="resultados"
+                style={{ width: "20px", height: "20px", marginRight: "8px" }}
+              />
+              Resultados Mensuales
+            </h4>
+            <p>
+              Las reservas han aumentado un 15% respecto al mes anterior,
+              mostrando una tendencia positiva constante.
+            </p>
           </div>
           <div className="tendencia-card">
-            <h4><img src="https://img.icons8.com/ios-filled/20/1a1a2e/money.png" alt="" style={{width:'20px', height:'20px', marginRight:'8px'}} />Rentabilidad</h4>
-            <p>Los ingresos mensuales superan las expectativas con un crecimiento del 22%, impulsado por clientes recurrentes.</p>
+            <h4>
+              <img
+                src="https://img.icons8.com/ios-filled/20/1a1a2e/money.png"
+                alt=""
+                style={{ width: "20px", height: "20px", marginRight: "8px" }}
+              />
+              Rentabilidad
+            </h4>
+            <p>
+              Los ingresos mensuales superan las expectativas con un crecimiento
+              del 22%, impulsado por clientes recurrentes.
+            </p>
           </div>
           <div className="tendencia-card">
-            <h4><img src="https://img.icons8.com/ios-filled/20/1a1a2e/conference-call.png" alt="" style={{width:'20px', height:'20px', marginRight:'8px'}} />Fidelización</h4>
-            <p>El 67% de los clientes son recurrentes, lo que indica una alta satisfacción y lealtad a la marca.</p>
+            <h4>
+              <img
+                src="https://img.icons8.com/ios-filled/20/1a1a2e/conference-call.png"
+                alt=""
+                style={{ width: "20px", height: "20px", marginRight: "8px" }}
+              />
+              Fidelización
+            </h4>
+            <p>
+              El 67% de los clientes son recurrentes, lo que indica una alta
+              satisfacción y lealtad a la marca.
+            </p>
           </div>
           <div className="tendencia-card">
-            <h4><img src="https://img.icons8.com/ios-filled/20/1a1a2e/statistics.png" alt="" style={{width:'20px', height:'20px', marginRight:'8px'}} />Eficiencia Operativa</h4>
-            <p>La tasa de cancelación se mantiene baja (3.2%) y la ocupación promedio es del 78.5%, optimizando recursos.</p>
+            <h4>
+              <img
+                src="https://img.icons8.com/ios-filled/20/1a1a2e/statistics.png"
+                alt=""
+                style={{ width: "20px", height: "20px", marginRight: "8px" }}
+              />
+              Eficiencia Operativa
+            </h4>
+            <p>
+              La tasa de cancelación se mantiene baja (3.2%) y la ocupación
+              promedio es del 78.5%, optimizando recursos.
+            </p>
           </div>
         </div>
       </div>

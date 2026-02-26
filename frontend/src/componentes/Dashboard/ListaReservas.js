@@ -3,25 +3,25 @@
  * BOOKIT - Componente ListaReservas
  * Archivo: componentes/Dashboard/ListaReservas.js
  * ============================================
- * 
+ *
  * Propósito: Lista de las próximas reservas del día.
  * Muestra avatar con inicial, nombre, personas, hora y estado.
- * 
+ *
  * Props:
  *   - reservas: Array de objetos de reserva
  */
 
-import React from 'react';
-import Boton from '../Compartidos/Boton';
+import React from "react";
+import Boton from "../Compartidos/Boton";
 
 // Colores para los avatares (se asignan rotativamente)
 const coloresAvatar = [
-  '#FDB022', // Amarillo
-  '#10B981', // Verde
-  '#4A90E2', // Azul
-  '#8B5CF6', // Morado
-  '#EC4899', // Rosa
-  '#F97316', // Naranja
+  "#FDB022", // Amarillo
+  "#10B981", // Verde
+  "#4A90E2", // Azul
+  "#8B5CF6", // Morado
+  "#EC4899", // Rosa
+  "#F97316", // Naranja
 ];
 
 const ListaReservas = ({ reservas, onVerTodas = () => {} }) => {
@@ -29,7 +29,7 @@ const ListaReservas = ({ reservas, onVerTodas = () => {} }) => {
    * Formatear la hora de "19:00:00" a "19:00"
    */
   const formatearHora = (hora) => {
-    if (!hora) return '';
+    if (!hora) return "";
     return hora.substring(0, 5); // Tomar solo HH:MM
   };
 
@@ -37,7 +37,7 @@ const ListaReservas = ({ reservas, onVerTodas = () => {} }) => {
    * Obtener la primera letra del nombre del cliente
    */
   const obtenerInicial = (nombre) => {
-    return nombre ? nombre[0].toUpperCase() : '?';
+    return nombre ? nombre[0].toUpperCase() : "?";
   };
 
   return (
@@ -56,7 +56,9 @@ const ListaReservas = ({ reservas, onVerTodas = () => {} }) => {
               {/* Avatar circular con inicial y color */}
               <div
                 className="reserva-avatar"
-                style={{ backgroundColor: coloresAvatar[indice % coloresAvatar.length] }}
+                style={{
+                  backgroundColor: coloresAvatar[indice % coloresAvatar.length],
+                }}
               >
                 {obtenerInicial(reserva.cliente)}
               </div>
@@ -66,29 +68,48 @@ const ListaReservas = ({ reservas, onVerTodas = () => {} }) => {
                 <div className="reserva-nombre">{reserva.cliente}</div>
                 <div className="reserva-detalle">
                   <span>{reserva.personas} personas</span>
-                  <span>🕐 {formatearHora(reserva.hora)}</span>
+                  <span>
+                    <img
+                      src="https://img.icons8.com/ios-filled/18/1a1a2e/clock--v1.png"
+                      alt="hora"
+                      style={{ verticalAlign: "middle", marginRight: "4px" }}
+                    />
+                    {formatearHora(reserva.hora)}
+                  </span>
                 </div>
               </div>
 
               {/* Badge de estado */}
               <span className={`reserva-estado estado-${reserva.estado}`}>
-                {reserva.estado === 'confirmada' ? 'Confirmada' : 
-                 reserva.estado === 'pendiente' ? 'Pendiente' : 
-                 reserva.estado === 'cancelada' ? 'Cancelada' : reserva.estado}
+                {reserva.estado === "confirmada"
+                  ? "Confirmada"
+                  : reserva.estado === "pendiente"
+                    ? "Pendiente"
+                    : reserva.estado === "cancelada"
+                      ? "Cancelada"
+                      : reserva.estado}
               </span>
             </div>
           ))
         ) : (
           // Si no hay reservas, mostrar mensaje
-          <p style={{ textAlign: 'center', color: '#718096', padding: '20px' }}>
+          <p style={{ textAlign: "center", color: "#718096", padding: "20px" }}>
             No hay reservas próximas
           </p>
         )}
       </div>
 
       {/* Botón para ver todas las reservas */}
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 20px' }}>
-        <Boton variante="secundario" onClick={onVerTodas}>Ver todas las reservas</Boton>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          padding: "12px 20px",
+        }}
+      >
+        <Boton variante="secundario" onClick={onVerTodas}>
+          Ver todas las reservas
+        </Boton>
       </div>
     </div>
   );

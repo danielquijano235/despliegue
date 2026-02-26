@@ -3,39 +3,141 @@
  * BOOKIT - Componente VistaClientes
  * Archivo: componentes/Dashboard/VistaClientes.js
  * ============================================
- * 
+ *
  * Propósito: Módulo completo de gestión de clientes.
  * Muestra tabla con todos los clientes, búsqueda,
  * modal para agregar nuevos clientes y estadísticas.
  */
 
-import React, { useState, useEffect } from 'react';
-import Boton from '../Compartidos/Boton';
-import { obtenerTodosClientes, crearCliente } from '../../servicios/api';
-import { useNotificaciones } from '../../contextos/NotificacionesContext';
+import React, { useState, useEffect } from "react";
+import Boton from "../Compartidos/Boton";
+import { obtenerTodosClientes, crearCliente } from "../../servicios/api";
+import { useNotificaciones } from "../../contextos/NotificacionesContext";
 
 // Datos de ejemplo cuando el backend no responde
 const clientesEjemplo = [
-  { id: 1, nombre: 'Carlos Rodríguez', telefono: '3001234567', email: 'carlos@email.com', visitas: 12, ultima_visita: '2026-02-07', preferencias: 'Mesa junto a la ventana', fecha_creacion: '2025-10-15' },
-  { id: 2, nombre: 'María González', telefono: '3009876543', email: 'maria@email.com', visitas: 8, ultima_visita: '2026-02-06', preferencias: 'Vegetariana', fecha_creacion: '2025-11-02' },
-  { id: 3, nombre: 'Ana López', telefono: '3005551234', email: 'ana@email.com', visitas: 23, ultima_visita: '2026-02-08', preferencias: 'Alergia al maní', fecha_creacion: '2025-08-20' },
-  { id: 4, nombre: 'Juan Pérez', telefono: '3007778899', email: 'juan@email.com', visitas: 5, ultima_visita: '2026-02-03', preferencias: '', fecha_creacion: '2025-12-10' },
-  { id: 5, nombre: 'Laura Martínez', telefono: '3002223344', email: 'laura@email.com', visitas: 15, ultima_visita: '2026-02-07', preferencias: 'Silla para bebé', fecha_creacion: '2025-09-05' },
-  { id: 6, nombre: 'Pedro Sánchez', telefono: '3006667788', email: 'pedro@email.com', visitas: 3, ultima_visita: '2026-01-28', preferencias: '', fecha_creacion: '2026-01-15' },
-  { id: 7, nombre: 'Sofía Ramírez', telefono: '3004445566', email: 'sofia@email.com', visitas: 31, ultima_visita: '2026-02-08', preferencias: 'Cliente VIP, mesa privada', fecha_creacion: '2025-06-12' },
-  { id: 8, nombre: 'Diego Torres', telefono: '3008889900', email: 'diego@email.com', visitas: 7, ultima_visita: '2026-02-05', preferencias: 'Sin gluten', fecha_creacion: '2025-11-28' },
-  { id: 9, nombre: 'Valentina Herrera', telefono: '3003216549', email: 'valentina@email.com', visitas: 2, ultima_visita: '2026-02-01', preferencias: '', fecha_creacion: '2026-01-20' },
-  { id: 10, nombre: 'Andrés Castro', telefono: '3001112233', email: 'andres@email.com', visitas: 19, ultima_visita: '2026-02-06', preferencias: 'Terraza', fecha_creacion: '2025-07-03' },
+  {
+    id: 1,
+    nombre: "Carlos Rodríguez",
+    telefono: "3001234567",
+    email: "carlos@email.com",
+    visitas: 12,
+    ultima_visita: "2026-02-07",
+    preferencias: "Mesa junto a la ventana",
+    fecha_creacion: "2025-10-15",
+  },
+  {
+    id: 2,
+    nombre: "María González",
+    telefono: "3009876543",
+    email: "maria@email.com",
+    visitas: 8,
+    ultima_visita: "2026-02-06",
+    preferencias: "Vegetariana",
+    fecha_creacion: "2025-11-02",
+  },
+  {
+    id: 3,
+    nombre: "Ana López",
+    telefono: "3005551234",
+    email: "ana@email.com",
+    visitas: 23,
+    ultima_visita: "2026-02-08",
+    preferencias: "Alergia al maní",
+    fecha_creacion: "2025-08-20",
+  },
+  {
+    id: 4,
+    nombre: "Juan Pérez",
+    telefono: "3007778899",
+    email: "juan@email.com",
+    visitas: 5,
+    ultima_visita: "2026-02-03",
+    preferencias: "",
+    fecha_creacion: "2025-12-10",
+  },
+  {
+    id: 5,
+    nombre: "Laura Martínez",
+    telefono: "3002223344",
+    email: "laura@email.com",
+    visitas: 15,
+    ultima_visita: "2026-02-07",
+    preferencias: "Silla para bebé",
+    fecha_creacion: "2025-09-05",
+  },
+  {
+    id: 6,
+    nombre: "Pedro Sánchez",
+    telefono: "3006667788",
+    email: "pedro@email.com",
+    visitas: 3,
+    ultima_visita: "2026-01-28",
+    preferencias: "",
+    fecha_creacion: "2026-01-15",
+  },
+  {
+    id: 7,
+    nombre: "Sofía Ramírez",
+    telefono: "3004445566",
+    email: "sofia@email.com",
+    visitas: 31,
+    ultima_visita: "2026-02-08",
+    preferencias: "Cliente VIP, mesa privada",
+    fecha_creacion: "2025-06-12",
+  },
+  {
+    id: 8,
+    nombre: "Diego Torres",
+    telefono: "3008889900",
+    email: "diego@email.com",
+    visitas: 7,
+    ultima_visita: "2026-02-05",
+    preferencias: "Sin gluten",
+    fecha_creacion: "2025-11-28",
+  },
+  {
+    id: 9,
+    nombre: "Valentina Herrera",
+    telefono: "3003216549",
+    email: "valentina@email.com",
+    visitas: 2,
+    ultima_visita: "2026-02-01",
+    preferencias: "",
+    fecha_creacion: "2026-01-20",
+  },
+  {
+    id: 10,
+    nombre: "Andrés Castro",
+    telefono: "3001112233",
+    email: "andres@email.com",
+    visitas: 19,
+    ultima_visita: "2026-02-06",
+    preferencias: "Terraza",
+    fecha_creacion: "2025-07-03",
+  },
 ];
 
-const coloresAvatar = ['#4A90E2', '#8B5CF6', '#10B981', '#FDB022', '#EC4899', '#F97316'];
+const coloresAvatar = [
+  "#4A90E2",
+  "#8B5CF6",
+  "#10B981",
+  "#FDB022",
+  "#EC4899",
+  "#F97316",
+];
 
 const VistaClientes = () => {
   const [clientes, setClientes] = useState([]);
-  const [busqueda, setBusqueda] = useState('');
+  const [busqueda, setBusqueda] = useState("");
   const [cargando, setCargando] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
-  const [formulario, setFormulario] = useState({ nombre: '', telefono: '', email: '', preferencias: '' });
+  const [formulario, setFormulario] = useState({
+    nombre: "",
+    telefono: "",
+    email: "",
+    preferencias: "",
+  });
   const [creando, setCreando] = useState(false);
   const { agregarNotificacion } = useNotificaciones();
 
@@ -49,7 +151,7 @@ const VistaClientes = () => {
       const datos = await obtenerTodosClientes();
       setClientes(datos);
     } catch (error) {
-      console.error('Error al cargar clientes:', error);
+      console.error("Error al cargar clientes:", error);
       setClientes(clientesEjemplo);
     } finally {
       setCargando(false);
@@ -59,14 +161,18 @@ const VistaClientes = () => {
   const manejarCrearCliente = async (e) => {
     e.preventDefault();
     if (!formulario.nombre.trim()) {
-      alert('El nombre es obligatorio');
+      alert("El nombre es obligatorio");
       return;
     }
     setCreando(true);
     try {
       await crearCliente(formulario);
-      agregarNotificacion('cliente', 'Nuevo cliente registrado', `${formulario.nombre} ha sido añadido a la base de datos${formulario.email ? ' (' + formulario.email + ')' : ''}`);
-      setFormulario({ nombre: '', telefono: '', email: '', preferencias: '' });
+      agregarNotificacion(
+        "cliente",
+        "Nuevo cliente registrado",
+        `${formulario.nombre} ha sido añadido a la base de datos${formulario.email ? " (" + formulario.email + ")" : ""}`,
+      );
+      setFormulario({ nombre: "", telefono: "", email: "", preferencias: "" });
       setModalVisible(false);
       cargarClientes();
     } catch (error) {
@@ -75,11 +181,15 @@ const VistaClientes = () => {
         ...formulario,
         visitas: 0,
         ultima_visita: null,
-        fecha_creacion: new Date().toISOString().split('T')[0],
+        fecha_creacion: new Date().toISOString().split("T")[0],
       };
-      setClientes(prev => [...prev, nuevoCliente]);
-      agregarNotificacion('cliente', 'Nuevo cliente registrado', `${formulario.nombre} ha sido añadido a la base de datos${formulario.email ? ' (' + formulario.email + ')' : ''}`);
-      setFormulario({ nombre: '', telefono: '', email: '', preferencias: '' });
+      setClientes((prev) => [...prev, nuevoCliente]);
+      agregarNotificacion(
+        "cliente",
+        "Nuevo cliente registrado",
+        `${formulario.nombre} ha sido añadido a la base de datos${formulario.email ? " (" + formulario.email + ")" : ""}`,
+      );
+      setFormulario({ nombre: "", telefono: "", email: "", preferencias: "" });
       setModalVisible(false);
     } finally {
       setCreando(false);
@@ -87,36 +197,43 @@ const VistaClientes = () => {
   };
 
   // Filtrar clientes
-  const clientesFiltrados = clientes.filter(c => {
+  const clientesFiltrados = clientes.filter((c) => {
     if (!busqueda) return true;
     const texto = busqueda.toLowerCase();
     return (
-      (c.nombre || '').toLowerCase().includes(texto) ||
-      (c.telefono || '').includes(texto) ||
-      (c.email || '').toLowerCase().includes(texto)
+      (c.nombre || "").toLowerCase().includes(texto) ||
+      (c.telefono || "").includes(texto) ||
+      (c.email || "").toLowerCase().includes(texto)
     );
   });
 
   const formatearFecha = (fecha) => {
-    if (!fecha) return '—';
-    const d = new Date(fecha + 'T00:00:00');
-    return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+    if (!fecha) return "—";
+    const d = new Date(fecha + "T00:00:00");
+    return d.toLocaleDateString("es-ES", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
   };
 
   const obtenerInicial = (nombre) => {
-    return nombre ? nombre[0].toUpperCase() : '?';
+    return nombre ? nombre[0].toUpperCase() : "?";
   };
 
   // Estadísticas rápidas
   const totalClientes = clientes.length;
-  const clientesActivos = clientes.filter(c => c.visitas >= 5).length;
-  const clientesNuevos = clientes.filter(c => {
+  const clientesActivos = clientes.filter((c) => c.visitas >= 5).length;
+  const clientesNuevos = clientes.filter((c) => {
     if (!c.fecha_creacion) return false;
     const hace30Dias = new Date();
     hace30Dias.setDate(hace30Dias.getDate() - 30);
     return new Date(c.fecha_creacion) >= hace30Dias;
   }).length;
-  const totalVisitas = clientes.reduce((sum, c) => sum + (Number(c.visitas) || 0), 0);
+  const totalVisitas = clientes.reduce(
+    (sum, c) => sum + (Number(c.visitas) || 0),
+    0,
+  );
 
   return (
     <div className="vista-clientes">
@@ -124,9 +241,15 @@ const VistaClientes = () => {
       <div className="vista-reservas-header">
         <div>
           <h1 className="dashboard-titulo">Clientes</h1>
-          <p className="dashboard-fecha">{totalClientes} clientes registrados</p>
+          <p className="dashboard-fecha">
+            {totalClientes} clientes registrados
+          </p>
         </div>
-        <Boton variante="primario" className="btn-nueva-reserva" onClick={() => setModalVisible(true)}>
+        <Boton
+          variante="primario"
+          className="btn-nueva-reserva"
+          onClick={() => setModalVisible(true)}
+        >
           + Nuevo Cliente
         </Boton>
       </div>
@@ -134,8 +257,16 @@ const VistaClientes = () => {
       {/* Tarjetas de estadísticas */}
       <div className="clientes-stats">
         <div className="cliente-stat-card">
-          <div className="cliente-stat-icono" style={{ backgroundColor: '#4A90E2' }}>
-            <img src="https://img.icons8.com/ios-filled/20/ffffff/people.png" alt="clientes" width="20" height="20" />
+          <div
+            className="cliente-stat-icono"
+            style={{ backgroundColor: "#4A90E2" }}
+          >
+            <img
+              src="https://img.icons8.com/ios-filled/20/ffffff/conference-call.png"
+              alt="clientes"
+              width="20"
+              height="20"
+            />
           </div>
           <div>
             <div className="cliente-stat-numero">{totalClientes}</div>
@@ -143,8 +274,16 @@ const VistaClientes = () => {
           </div>
         </div>
         <div className="cliente-stat-card">
-          <div className="cliente-stat-icono" style={{ backgroundColor: '#10B981' }}>
-            <img src="https://img.icons8.com/ios-filled/20/ffffff/star--v1.png" alt="frecuentes" width="20" height="20" />
+          <div
+            className="cliente-stat-icono"
+            style={{ backgroundColor: "#10B981" }}
+          >
+            <img
+              src="https://img.icons8.com/ios-filled/20/ffffff/star--v1.png"
+              alt="frecuentes"
+              width="20"
+              height="20"
+            />
           </div>
           <div>
             <div className="cliente-stat-numero">{clientesActivos}</div>
@@ -152,8 +291,16 @@ const VistaClientes = () => {
           </div>
         </div>
         <div className="cliente-stat-card">
-          <div className="cliente-stat-icono" style={{ backgroundColor: '#8B5CF6' }}>
-            <img src="https://img.icons8.com/ios-filled/20/ffffff/plus-math.png" alt="nuevos" width="20" height="20" />
+          <div
+            className="cliente-stat-icono"
+            style={{ backgroundColor: "#8B5CF6" }}
+          >
+            <img
+              src="https://img.icons8.com/ios-filled/20/ffffff/plus-math.png"
+              alt="nuevos"
+              width="20"
+              height="20"
+            />
           </div>
           <div>
             <div className="cliente-stat-numero">{clientesNuevos}</div>
@@ -161,8 +308,16 @@ const VistaClientes = () => {
           </div>
         </div>
         <div className="cliente-stat-card">
-          <div className="cliente-stat-icono" style={{ backgroundColor: '#FDB022' }}>
-            <img src="https://img.icons8.com/ios-filled/20/ffffff/refresh.png" alt="actividad" width="20" height="20" />
+          <div
+            className="cliente-stat-icono"
+            style={{ backgroundColor: "#FDB022" }}
+          >
+            <img
+              src="https://img.icons8.com/ios-filled/20/ffffff/refresh.png"
+              alt="actividad"
+              width="20"
+              height="20"
+            />
           </div>
           <div>
             <div className="cliente-stat-numero">{totalVisitas}</div>
@@ -174,9 +329,23 @@ const VistaClientes = () => {
       {/* Búsqueda */}
       <div className="reservas-busqueda">
         <span className="reservas-busqueda-icono">
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <circle cx="9" cy="9" r="7" stroke="#FDB022" strokeWidth="2" />
-            <line x1="14.4142" y1="14" x2="18" y2="17.5858" stroke="#FDB022" strokeWidth="2" strokeLinecap="round" />
+            <line
+              x1="14.4142"
+              y1="14"
+              x2="18"
+              y2="17.5858"
+              stroke="#FDB022"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
           </svg>
         </span>
         <input
@@ -195,8 +364,15 @@ const VistaClientes = () => {
           </div>
         ) : clientesFiltrados.length === 0 ? (
           <div className="reservas-vacio">
-            <div style={{ textAlign: 'center', padding: '24px', color: '#718096' }}>
-              <img src="https://img.icons8.com/ios-filled/48/1a1a2e/people.png" alt="sin clientes" width="48" height="48" />
+            <div
+              style={{ textAlign: "center", padding: "24px", color: "#718096" }}
+            >
+              <img
+                src="https://img.icons8.com/ios-filled/48/1a1a2e/people.png"
+                alt="sin clientes"
+                width="48"
+                height="48"
+              />
               <p style={{ marginTop: 12 }}>No se encontraron clientes</p>
             </div>
           </div>
@@ -220,29 +396,46 @@ const VistaClientes = () => {
                     <div className="tabla-cliente">
                       <div
                         className="tabla-avatar"
-                        style={{ backgroundColor: coloresAvatar[indice % coloresAvatar.length] }}
+                        style={{
+                          backgroundColor:
+                            coloresAvatar[indice % coloresAvatar.length],
+                        }}
                       >
                         {obtenerInicial(cliente.nombre)}
                       </div>
-                      <span className="tabla-cliente-nombre">{cliente.nombre}</span>
+                      <span className="tabla-cliente-nombre">
+                        {cliente.nombre}
+                      </span>
                     </div>
                   </td>
-                  <td className="tabla-fecha">{cliente.telefono || '—'}</td>
-                  <td className="tabla-fecha">{cliente.email || '—'}</td>
+                  <td className="tabla-fecha">{cliente.telefono || "—"}</td>
+                  <td className="tabla-fecha">{cliente.email || "—"}</td>
                   <td>
-                    <span className={`visitas-badge ${Number(cliente.visitas) >= 10 ? 'visitas-vip' : ''}`}>
+                    <span
+                      className={`visitas-badge ${Number(cliente.visitas) >= 10 ? "visitas-vip" : ""}`}
+                    >
                       {cliente.visitas || 0} visitas
                     </span>
                   </td>
-                  <td className="tabla-fecha">{formatearFecha(cliente.ultima_visita)}</td>
+                  <td className="tabla-fecha">
+                    {formatearFecha(cliente.ultima_visita)}
+                  </td>
                   <td className="tabla-notas">
                     {cliente.preferencias ? (
-                      <span className="notas-badge" title={cliente.preferencias}>
-                        {cliente.preferencias.substring(0, 25)}{cliente.preferencias.length > 25 ? '...' : ''}
+                      <span
+                        className="notas-badge"
+                        title={cliente.preferencias}
+                      >
+                        {cliente.preferencias.substring(0, 25)}
+                        {cliente.preferencias.length > 25 ? "..." : ""}
                       </span>
-                    ) : '—'}
+                    ) : (
+                      "—"
+                    )}
                   </td>
-                  <td className="tabla-fecha">{formatearFecha(cliente.fecha_creacion)}</td>
+                  <td className="tabla-fecha">
+                    {formatearFecha(cliente.fecha_creacion)}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -263,7 +456,12 @@ const VistaClientes = () => {
                   className="campo-input"
                   placeholder="Nombre completo"
                   value={formulario.nombre}
-                  onChange={(e) => setFormulario(prev => ({ ...prev, nombre: e.target.value }))}
+                  onChange={(e) =>
+                    setFormulario((prev) => ({
+                      ...prev,
+                      nombre: e.target.value,
+                    }))
+                  }
                   required
                 />
               </div>
@@ -274,7 +472,12 @@ const VistaClientes = () => {
                   className="campo-input"
                   placeholder="Ej: 3001234567"
                   value={formulario.telefono}
-                  onChange={(e) => setFormulario(prev => ({ ...prev, telefono: e.target.value }))}
+                  onChange={(e) =>
+                    setFormulario((prev) => ({
+                      ...prev,
+                      telefono: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="campo-grupo">
@@ -284,7 +487,12 @@ const VistaClientes = () => {
                   className="campo-input"
                   placeholder="correo@ejemplo.com"
                   value={formulario.email}
-                  onChange={(e) => setFormulario(prev => ({ ...prev, email: e.target.value }))}
+                  onChange={(e) =>
+                    setFormulario((prev) => ({
+                      ...prev,
+                      email: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="campo-grupo">
@@ -292,15 +500,30 @@ const VistaClientes = () => {
                 <textarea
                   placeholder="Alergias, mesa favorita, notas..."
                   value={formulario.preferencias}
-                  onChange={(e) => setFormulario(prev => ({ ...prev, preferencias: e.target.value }))}
+                  onChange={(e) =>
+                    setFormulario((prev) => ({
+                      ...prev,
+                      preferencias: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="modal-botones">
-                <Boton tipo="button" variante="secundario" className="btn-cancelar" onClick={() => setModalVisible(false)}>
+                <Boton
+                  tipo="button"
+                  variante="secundario"
+                  className="btn-cancelar"
+                  onClick={() => setModalVisible(false)}
+                >
                   Cancelar
                 </Boton>
-                <Boton tipo="submit" variante="primario" className="btn-crear-reserva" disabled={creando}>
-                  {creando ? 'Creando...' : 'Crear Cliente'}
+                <Boton
+                  tipo="submit"
+                  variante="primario"
+                  className="btn-crear-reserva"
+                  disabled={creando}
+                >
+                  {creando ? "Creando..." : "Crear Cliente"}
                 </Boton>
               </div>
             </form>
