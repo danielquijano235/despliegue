@@ -1,38 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import ModalMenu from '../componentes/Compartidos/ModalMenu';
+import ModalItem from '../componentes/Compartidos/ModalItem';
+import { getPlatos } from '../servicios/menuStorage';
 
-const items = [
-  { title: 'Tostadas Francesas', desc: 'Pan brioche con miel y frutas', price: '$6.50' },
-  { title: 'Omelette', desc: 'Huevos, queso y verduras frescas', price: '$5.50' },
-  { title: 'Avena', desc: 'Avena caliente con frutas', price: '$4.00' },
+const defaultItems = [
+  { nombre: 'Tostadas Francesas', descripcion: 'Pan brioche con miel y frutas', precio: 6500, imagen: '/assets/images/para-empezar.jpg', categoria: 'entradas' },
+  { nombre: 'Omelette', descripcion: 'Huevos, queso y verduras frescas', precio: 5500, imagen: '/assets/images/para-empezar.jpg', categoria: 'entradas' },
+  { nombre: 'Avena', descripcion: 'Avena caliente con frutas', precio: 4000, imagen: '/assets/images/para-empezar.jpg', categoria: 'entradas' },
 ];
 
-const storageKey = (title) => `menuContent:desayunos:${title}`;
-
 const MenuDesayunos = () => {
+  const [items, setItems] = useState([]);
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
-  const [content, setContent] = useState('');
 
   useEffect(() => {
-    if (selected) {
-      const stored = localStorage.getItem(storageKey(selected.title));
-      setContent(stored ?? selected.desc ?? '');
-      setOpen(true);
+    const stored = getPlatos();
+    if (stored && Array.isArray(stored)) {
+      setItems(stored.filter(p => p.categoria === 'entradas' || p.categoria === 'desayunos'));
+    } else {
+      setItems(defaultItems);
     }
-  }, [selected]);
+  }, []);
 
-  const handleOpen = (it) => setSelected(it);
-  const handleClose = () => {
-    setOpen(false);
-    setSelected(null);
-  };
-  const handleSave = () => {
-    if (selected) {
-      localStorage.setItem(storageKey(selected.title), content);
-    }
-    handleClose();
-  };
+  const abrir = (it) => { setSelected(it); setOpen(true); };
+  const cerrar = () => { setOpen(false); setSelected(null); };
+
+  const formatPrice = (n) => n == null ? '' : ('$' + Number(n).toLocaleString('es-CO'));
 
   return (
     <main style={{ padding: 24 }}>
@@ -40,22 +33,15 @@ const MenuDesayunos = () => {
       <p>Comienza tu día con energía</p>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 16, marginTop: 18 }}>
         {items.map((it) => (
-          <article key={it.title} onClick={() => handleOpen(it)} style={{ padding: 16, borderRadius: 10, background: '#fff', boxShadow: '0 2px 6px rgba(0,0,0,0.08)', cursor: 'pointer' }}>
-            <h3 style={{ margin: '0 0 8px' }}>{it.title}</h3>
-            <p style={{ margin: '0 0 12px', color: '#555' }}>{it.desc}</p>
-            <div style={{ fontWeight: 700 }}>{it.price}</div>
+          <article key={it.id || it.nombre} onClick={() => abrir(it)} style={{ padding: 16, borderRadius: 10, background: '#fff', boxShadow: '0 2px 6px rgba(0,0,0,0.08)', cursor: 'pointer' }}>
+            <h3 style={{ margin: '0 0 8px' }}>{it.nombre || it.title}</h3>
+            <p style={{ margin: '0 0 12px', color: '#555' }}>{it.descripcion || it.desc}</p>
+            <div style={{ fontWeight: 700 }}>{formatPrice(it.precio)}</div>
           </article>
         ))}
       </div>
 
-      <ModalMenu
-        open={open}
-        title={selected ? selected.title : 'Detalle'}
-        content={content}
-        onChange={setContent}
-        onSave={handleSave}
-        onClose={handleClose}
-      />
+      <ModalItem open={open} item={selected} onClose={cerrar} />
     </main>
   );
 };

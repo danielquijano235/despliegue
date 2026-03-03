@@ -1668,6 +1668,15 @@
   .menu-landing { padding: 24px 16px; }
 }
 
+/* Responsive grid for category buttons */
+@media (max-width: 992px) {
+  .categorias-filtro { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .categorias-filtro { grid-template-columns: repeat(2, 1fr); }
+}
+
 /* Sección en construcción */
 .seccion-en-construccion {
   display: flex;
@@ -2616,23 +2625,27 @@
 }
 
 .categorias-filtro {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   margin-bottom: 24px;
-  flex-wrap: wrap;
 }
 
 .categoria-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
+  justify-content: center;
+  gap: 0;
+  padding: 12px;
   background: white;
   border: 2px solid var(--color-borde);
   border-radius: 12px;
   cursor: pointer;
   transition: var(--transicion-normal);
-  font-weight: 500;
+  font-weight: 600;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
 }
 /* Modulo header: mantener consistencia (título a la izquierda, acciones a la derecha) */
 .modulo-header {
@@ -2667,7 +2680,9 @@
 }
 
 .categoria-nombre {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  display: block;
+  width: 100%;
 }
 
 .categoria-cantidad {

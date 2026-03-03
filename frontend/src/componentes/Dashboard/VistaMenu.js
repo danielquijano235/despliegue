@@ -14,91 +14,33 @@ import ConfirmDialog from '../Compartidos/ConfirmDialog';
 import { useNotificaciones } from '../../contextos/NotificacionesContext';
 import Boton from '../Compartidos/Boton';
 
-// Datos de ejemplo para el menú
-const menuInicial = [
-  {
-    id: 1,
-    nombre: 'Carpaccio de Salmon',
-    descripcion: 'Finas láminas de salmón fresco con aceite de oliva, limón y alcaparras',
-    precio: 45000,
-    categoria: 'entradas',
-    disponible: true,
-    popularidad: 95,
-    imagen: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&h=200&fit=crop',
-    tiempoPreparacion: 10,
-    alergenos: ['pescado'],
-  },
-  {
-    id: 2,
-    nombre: 'Risoto de Champiñones',
-    descripcion: 'Arroz arborio cremoso con champiñones silvestres y parmesano',
-    precio: 38000,
-    categoria: 'principales',
-    disponible: true,
-    popularidad: 88,
-    imagen: 'https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=300&h=200&fit=crop',
-    tiempoPreparacion: 25,
-    alergenos: ['lácteos'],
-  },
-  {
-    id: 3,
-    nombre: 'Filete de Res Angus',
-    descripcion: 'Filete de 250g con reducción de vino tinto y vegetales de temporada',
-    precio: 75000,
-    categoria: 'principales',
-    disponible: true,
-    popularidad: 92,
-    imagen: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&h=200&fit=crop',
-    tiempoPreparacion: 20,
-    alergenos: [],
-  },
-  {
-    id: 4,
-    nombre: 'Tiramisú Casero',
-    descripcion: 'Postre italiano tradicional con café, mascarpone y cacao',
-    precio: 25000,
-    categoria: 'postres',
-    disponible: true,
-    popularidad: 85,
-    imagen: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=300&h=200&fit=crop',
-    tiempoPreparacion: 5,
-    alergenos: ['lácteos', 'gluten', 'huevos'],
-  },
-  {
-    id: 5,
-    nombre: 'Vino Tinto Reserva',
-    descripcion: 'Copa de vino tinto Cabernet Sauvignon de la región de Maipo',
-    precio: 18000,
-    categoria: 'bebidas',
-    disponible: true,
-    popularidad: 78,
-    imagen: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=300&h=200&fit=crop',
-    tiempoPreparacion: 2,
-    alergenos: ['sulfitos'],
-  },
-  {
-    id: 6,
-    nombre: 'Ensalada César',
-    descripcion: 'Lechuga romana, crutones, parmesano y aderezo César tradicional',
-    precio: 32000,
-    categoria: 'entradas',
-    disponible: false,
-    popularidad: 76,
-    imagen: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=300&h=200&fit=crop',
-    tiempoPreparacion: 12,
-    alergenos: ['lácteos', 'gluten', 'huevos'],
-  },
-];
+// Datos de ejemplo para el menú (vacio por defecto)
+const menuInicial = [];
 
 const categorias = [
-  { id: 'entradas', nombre: 'Entradas', icono: 'https://img.icons8.com/ios-filled/20/1a1a2e/salad.png', color: '#10B981' },
-  { id: 'principales', nombre: 'Platos Principales', icono: 'https://img.icons8.com/ios-filled/20/1a1a2e/restaurant.png', color: '#FDB022' },
-  { id: 'postres', nombre: 'Postres', icono: 'https://img.icons8.com/ios-filled/20/1a1a2e/cake.png', color: '#EC4899' },
-  { id: 'bebidas', nombre: 'Bebidas', icono: 'https://img.icons8.com/ios-filled/20/1a1a2e/wine-glass.png', color: '#8B5CF6' },
+  { id: 'para-empezar', nombre: 'PARA EMPEZAR' },
+  { id: 'sopas', nombre: 'SOPAS' },
+  { id: 'carnes', nombre: 'CARNES' },
+  { id: 'parrilla', nombre: 'PARRILLA' },
+  { id: 'especiales', nombre: 'ESPECIALES' },
+  { id: 'ensaladas', nombre: 'ENSALADAS' },
+  { id: 'hamburguesas', nombre: 'HAMBURGUESAS' },
+  { id: 'infantil', nombre: 'INFANTIL' },
+  { id: 'cafes', nombre: 'CAFÉS' },
+  { id: 'jugos', nombre: 'JUGOS' },
+  { id: 'bebidas', nombre: 'BEBIDAS' },
+  { id: 'licores', nombre: 'LICORES' },
 ];
 
 const VistaMenu = () => {
-  const [platos, setPlatos] = useState(menuInicial);
+  const [platos, setPlatos] = useState(() => {
+    try {
+      const stored = localStorage.getItem('bookit:menu:platos');
+      return stored ? JSON.parse(stored) : menuInicial;
+    } catch (e) {
+      return menuInicial;
+    }
+  });
   const [categoriaActiva, setCategoriaActiva] = useState('todos');
   const [busqueda, setBusqueda] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -110,7 +52,7 @@ const VistaMenu = () => {
     nombre: '',
     descripcion: '',
     precio: '',
-    categoria: 'entradas',
+    categoria: 'para-empezar',
     disponible: true,
     imagen: '',
     tiempoPreparacion: '',
@@ -143,7 +85,7 @@ const VistaMenu = () => {
       nombre: '',
       descripcion: '',
       precio: '',
-      categoria: 'entradas',
+      categoria: 'para-empezar',
       disponible: true,
       imagen: '',
       tiempoPreparacion: '',
@@ -192,9 +134,13 @@ const VistaMenu = () => {
     };
 
     if (platoEditando) {
-      setPlatos(platos.map(p => p.id === platoEditando.id ? nuevoPlato : p));
+      const updated = platos.map(p => p.id === platoEditando.id ? nuevoPlato : p);
+      setPlatos(updated);
+      localStorage.setItem('bookit:menu:platos', JSON.stringify(updated));
     } else {
-      setPlatos([...platos, nuevoPlato]);
+      const updated = [...platos, nuevoPlato];
+      setPlatos(updated);
+      localStorage.setItem('bookit:menu:platos', JSON.stringify(updated));
     }
 
     cerrarModal();
@@ -214,7 +160,9 @@ const VistaMenu = () => {
     if (!confirmPayload) return;
     const { tipo, id, texto } = confirmPayload;
     if (tipo === 'plato') {
-      setPlatos(prev => prev.filter(p => p.id !== id));
+      const updated = platos.filter(p => p.id !== id);
+      setPlatos(updated);
+      localStorage.setItem('bookit:menu:platos', JSON.stringify(updated));
       agregarNotificacion('sistema', 'Plato eliminado', `${texto} ha sido eliminado del menú`);
     }
     setConfirmOpen(false);
@@ -317,12 +265,6 @@ const VistaMenu = () => {
 
       {/* Filtros por categoría */}
       <div className="categorias-filtro">
-        <Boton variante={categoriaActiva === 'todos' ? 'primario' : 'secundario'} className={`categoria-btn ${categoriaActiva === 'todos' ? 'activo' : ''}`} onClick={() => setCategoriaActiva('todos')}>
-          <span className="categoria-icono">
-            <img src="https://img.icons8.com/ios-filled/20/1a1a2e/restaurant.png" alt="" style={{width:'20px', height:'20px'}} />
-          </span>
-          <span className="categoria-nombre">Todos</span>
-        </Boton>
         {categorias.map(categoria => (
           <Boton
             key={categoria.id}
@@ -330,13 +272,7 @@ const VistaMenu = () => {
             className={`categoria-btn ${categoriaActiva === categoria.id ? 'activo' : ''}`}
             onClick={() => setCategoriaActiva(categoria.id)}
           >
-            <span className="categoria-icono">
-              <img src={categoria.icono} alt="" style={{width:'20px', height:'20px'}} />
-            </span>
             <span className="categoria-nombre">{categoria.nombre}</span>
-            <span className="categoria-cantidad">
-              {platos.filter(p => p.categoria === categoria.id).length}
-            </span>
           </Boton>
         ))}
       </div>
@@ -388,18 +324,7 @@ const VistaMenu = () => {
             </div>
           </div>
         ))}
-        {platosFiltrados.length === 0 && (
-          <div className="menu-vacio" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 220 }}>
-            <img
-              src="https://img.icons8.com/ios-filled/48/1a1a2e/restaurant.png"
-              alt="sin platos"
-              width="48"
-              height="48"
-              style={{ display: 'block', margin: '0 auto 12px' }}
-            />
-            <p style={{ textAlign: 'center', marginTop: 12 }}>No se encontraron platos con los filtros aplicados</p>
-          </div>
-        )}
+        
       </div>
 
       {/* Modal para nuevo/editar plato */}
@@ -467,42 +392,7 @@ const VistaMenu = () => {
                   />
                 </div>
 
-                <div className="form-grupo full-width">
-                  <label>URL de imagen</label>
-                  <input
-                    type="url"
-                    value={formulario.imagen}
-                    onChange={(e) => setFormulario({...formulario, imagen: e.target.value})}
-                    placeholder="https://..."
-                  />
-                </div>
-
-                <div className="form-grupo full-width">
-                  <label>Alérgenos</label>
-                  <div className="alergenos-input">
-                    <input
-                      type="text"
-                      placeholder="Agregar alérgeno..."
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          agregarAlergeno(e.target.value);
-                          e.target.value = '';
-                        }
-                      }}
-                    />
-                    <div className="alergenos-lista">
-                      {formulario.alergenos.map(alergeno => (
-                        <span key={alergeno} className="alergeno-tag editable">
-                              {alergeno}
-                              <Boton variante="ghost" className="alergeno-quitar" onClick={() => quitarAlergeno(alergeno)}>
-                                <img src="https://img.icons8.com/ios-filled/20/1a1a2e/delete-sign.png" alt="Quitar" style={{width:'12px', height:'12px'}} />
-                              </Boton>
-                            </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                
 
                 <div className="form-grupo checkbox-grupo">
                   <label className="checkbox-label">
