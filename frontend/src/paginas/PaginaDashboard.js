@@ -39,6 +39,7 @@ const PaginaDashboard = () => {
   const [cargando, setCargando] = useState(true);
   const [seccionActiva, setSeccionActiva] = useState("inicio");
   const [busquedaGlobal, setBusquedaGlobal] = useState("");
+  
 
   const navigate = useNavigate();
   const { agregarNotificacion } = useNotificaciones();

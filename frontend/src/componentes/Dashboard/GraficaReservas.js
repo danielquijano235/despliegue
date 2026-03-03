@@ -13,7 +13,8 @@
  * Usa la librería Chart.js a través del wrapper react-chartjs-2
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { obtenerReservasSemana } from '../../servicios/api';
 import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -29,9 +30,34 @@ import {
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const GraficaReservas = ({ datos }) => {
+  const [datosInternos, setDatosInternos] = useState(datos);
+
+  useEffect(() => {
+    let mounted = true;
+    const cargar = async () => {
+      // Si ya recibimos datos por props, no llamar a la API
+      if (datos && Object.keys(datos).length) return;
+      try {
+        const res = await obtenerReservasSemana();
+        if (mounted && res) setDatosInternos(res);
+      } catch (err) {
+        console.error('Error obteniendo reservas semana:', err);
+      }
+    };
+    cargar();
+    return () => { mounted = false; };
+  }, [datos]);
+
+  // Mantener datosInternos sincronizados cuando cambie la prop `datos`
+  useEffect(() => {
+    if (datos && Object.keys(datos).length) setDatosInternos(datos);
+  }, [datos]);
+
+  const fuente = datosInternos || datos || { Lun: 0, Mar: 0, Mié: 0, Jue: 0, Vie: 0, Sáb: 0, Dom: 0 };
+
   // Extraer los nombres de los días y sus valores
-  const etiquetas = Object.keys(datos);    // ["Lun", "Mar", ...]
-  const valores = Object.values(datos);     // [45, 52, ...]
+  const etiquetas = Object.keys(fuente);    // ["Lun", "Mar", ...]
+  const valores = Object.values(fuente);     // [45, 52, ...]
 
   // Configuración de los datos para la gráfica
   const datosGrafica = {

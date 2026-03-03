@@ -93,6 +93,7 @@ export const obtenerMetricasHoy = async () => {
 export const obtenerReservasSemana = async () => {
   return peticion('/estadisticas/reservas-semana.php');
 };
+ 
 
 /**
  * Obtener las próximas reservas (pendientes y confirmadas)

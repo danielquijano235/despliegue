@@ -11,15 +11,17 @@
  *   - metricas: Datos de métricas actuales
  *   - datosGrafica: Datos para gráficos
  */
-
-import React, { useState, useEffect } from "react";
-import TarjetaMetrica from "./TarjetaMetrica";
-import GraficaReservas from "./GraficaReservas";
+import React, { useEffect, useState } from 'react';
+import TarjetaMetrica from './TarjetaMetrica';
+import GraficaReservas from './GraficaReservas';
+import GraficaMensual from './GraficaMensual';
+import { obtenerTodasReservas } from '../../servicios/api';
 
 const VistaAnalisis = ({ metricas, datosGrafica }) => {
   // ============================================
   // DATOS MOCK PARA DEMOSTRACIÓN
   // ============================================
+  const [mensualData, setMensualData] = useState(null);
   const metricasAnalisis = {
     reservas_mes: 245,
     ingresos_mes: 18500,
@@ -30,26 +32,26 @@ const VistaAnalisis = ({ metricas, datosGrafica }) => {
   };
 
   const datosGraficaMensual = {
-    labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun"],
+    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
     datasets: [
       {
-        label: "Reservas Mensuales",
+        label: 'Reservas Mensuales',
         data: [180, 220, 195, 240, 265, 245],
-        backgroundColor: "#4A90E2",
-        borderColor: "#4A90E2",
+        backgroundColor: '#4A90E2',
+        borderColor: '#4A90E2',
         borderWidth: 1,
       },
     ],
   };
 
   const datosIngresos = {
-    labels: ["Sem 1", "Sem 2", "Sem 3", "Sem 4"],
+    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
     datasets: [
       {
-        label: "Ingresos por Semana",
+        label: 'Ingresos por Semana',
         data: [4200, 4800, 5100, 4400],
-        backgroundColor: "#10B981",
-        borderColor: "#10B981",
+        backgroundColor: '#10B981',
+        borderColor: '#10B981',
         borderWidth: 1,
       },
     ],
@@ -68,13 +70,56 @@ const VistaAnalisis = ({ metricas, datosGrafica }) => {
   };
 
   const obtenerFechaFormateada = () => {
-    return new Date().toLocaleDateString("es-ES", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+    return new Date().toLocaleDateString('es-ES', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     });
   };
+
+  useEffect(() => {
+    const construirMensual = async () => {
+      // Si metricas incluye datos mensuales ya formateados, usarlos
+      if (metricas && metricas.mensual && metricas.mensual.labels && metricas.mensual.data) {
+        setMensualData(metricas.mensual);
+        return;
+      }
+
+      try {
+        const todas = await obtenerTodasReservas();
+        // todas: array de reservas con campo `fecha` (YYYY-MM-DD)
+        // Construir los últimos 12 meses (labels)
+        const ahora = new Date();
+        const meses = [];
+        for (let i = 11; i >= 0; i--) {
+          const d = new Date(ahora.getFullYear(), ahora.getMonth() - i, 1);
+          const label = d.toLocaleString('es-ES', { month: 'short' });
+          const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; // YYYY-MM
+          meses.push({ label, key });
+        }
+
+        const conteos = meses.map(() => 0);
+        todas.forEach((r) => {
+          if (!r.fecha) return;
+          const ymd = r.fecha.split('T')[0] || r.fecha; // soportar ISO
+          const [y, m] = ymd.split('-');
+          if (!y || !m) return;
+          const key = `${y}-${m}`;
+          const idx = meses.findIndex((ms) => ms.key === key);
+          if (idx >= 0) conteos[idx] += 1;
+        });
+
+        setMensualData({ labels: meses.map((m) => m.label), data: conteos });
+      } catch (error) {
+        console.error('Error construyendo datos mensuales:', error);
+        // fallback vacío
+        setMensualData(null);
+      }
+    };
+
+    construirMensual();
+  }, [metricas]);
 
   return (
     <div className="vista-analisis">
@@ -132,16 +177,26 @@ const VistaAnalisis = ({ metricas, datosGrafica }) => {
 
       {/* ====== GRÁFICOS DETALLADOS ====== */}
       <div className="analisis-grid">
-        {/* Gráfico de reservas mensuales */}
+        {/* Mostrar solo una gráfica tipo 'Inicio' + una gráfica mensual 12 meses */}
         <div className="grafico-container">
-          <h3>Evolución de Reservas (Últimos 6 Meses)</h3>
-          <GraficaReservas datos={datosGraficaMensual} />
+          <h3>Reservas Semana (mismo formato que Inicio)</h3>
+          <GraficaReservas datos={datosGrafica || {
+            Lun: 45,
+            Mar: 52,
+            Mié: 61,
+            Jue: 58,
+            Vie: 78,
+            Sáb: 95,
+            Dom: 88,
+          }} />
         </div>
 
-        {/* Gráfico de ingresos semanales */}
         <div className="grafico-container">
-          <h3>Ingresos por Semana (Mes Actual)</h3>
-          <GraficaReservas datos={datosIngresos} />
+          <GraficaMensual datos={
+            // Usar primero los datos calculados en este componente (mensualData),
+            // si no existen, caer back a metricas.mensual provista por la API.
+            mensualData || (metricas && metricas.mensual)
+          } />
         </div>
       </div>
 
