@@ -14,9 +14,16 @@ import DemoFooter from './DemoFooter';
 
 const DemoLanding = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-  const abrirModal = () => setModalVisible(true);
-  const cerrarModal = () => setModalVisible(false);
+  const abrirModal = (ev) => {
+    if (ev) setSelectedEvent(ev);
+    setModalVisible(true);
+  };
+  const cerrarModal = () => {
+    setSelectedEvent(null);
+    setModalVisible(false);
+  };
 
   // Cuando el modal está visible, además de bloquear el body,
   // aseguramos que el contenedor `.demo-landing` también no haga scroll.
@@ -46,10 +53,10 @@ const DemoLanding = () => {
 
       <DemoMenu />
       <DemoReservar onOpenReserva={abrirModal} />
-      <DemoEventos />
+      <DemoEventos onOpenReserva={abrirModal} />
       <DemoContacto />
 
-      <DemoReserva visible={modalVisible} onCerrar={cerrarModal} />
+      <DemoReserva visible={modalVisible} onCerrar={cerrarModal} selectedEvent={selectedEvent} />
       <DemoFooter />
       
     </div>

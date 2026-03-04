@@ -39,7 +39,7 @@ const obtenerDiasMes = (anio, mes) => {
   return dias;
 };
 
-const DemoReserva = ({ visible, onCerrar }) => {
+const DemoReserva = ({ visible, onCerrar, selectedEvent }) => {
   // ============================================
   // ESTADOS
   // ============================================
@@ -170,7 +170,7 @@ const DemoReserva = ({ visible, onCerrar }) => {
           <p className="demo-header-subtitulo">
             {confirmado
               ? 'Así de fácil es reservar con BookIt'
-              : 'Así de simple reservan tus clientes'
+              : (selectedEvent ? `Reservando: ${selectedEvent.title}` : 'Así de simple reservan tus clientes')
             }
           </p>
         </div>
