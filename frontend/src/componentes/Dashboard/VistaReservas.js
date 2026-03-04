@@ -322,6 +322,20 @@ const VistaReservas = () => {
     return hora.substring(0, 5);
   };
 
+  const formatearTelefono = (tel) => {
+    if (!tel) return "";
+    const raw = String(tel).trim();
+    if (raw.startsWith('+')) return raw; // ya tiene prefijo
+    // Extraer solo dígitos
+    const digits = raw.replace(/\D/g, '');
+    if (!digits) return raw;
+    // Si ya incluye código de país '57' al inicio, anteponer '+'
+    if (digits.startsWith('57')) return `+${digits}`;
+    // Si parece número móvil local (10 dígitos que empiezan por 3) o al menos 7 dígitos, añadir +57
+    if (digits.length >= 7) return `+57 ${digits}`;
+    return raw;
+  };
+
   const obtenerInicial = (nombre) => {
     return nombre ? nombre[0].toUpperCase() : "?";
   };
@@ -463,8 +477,11 @@ const VistaReservas = () => {
                           {reserva.cliente_nombre || reserva.cliente}
                         </span>
                         <span className="tabla-cliente-tel">
-                          {reserva.cliente_telefono || ""}
+                          {formatearTelefono(reserva.cliente_telefono) || ""}
                         </span>
+                        {reserva.cliente_email ? (
+                          <span className="tabla-cliente-email">{reserva.cliente_email}</span>
+                        ) : null}
                       </div>
                     </div>
                   </td>

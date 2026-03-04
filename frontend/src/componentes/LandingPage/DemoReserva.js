@@ -54,6 +54,7 @@ const DemoReserva = ({ visible, onCerrar, selectedEvent, demoOnly = false }) => 
   const [confirmado, setConfirmado] = useState(false);
   const [nombreDemo, setNombreDemo] = useState('');
   const [telefonoDemo, setTelefonoDemo] = useState('');
+  const [emailDemo, setEmailDemo] = useState('');
 
   const hoy = new Date();
   const diasMes = obtenerDiasMes(anioActual, mesActual);
@@ -161,7 +162,7 @@ const DemoReserva = ({ visible, onCerrar, selectedEvent, demoOnly = false }) => 
             id: `demo-${Date.now()}`,
             cliente_nombre: nombreDemo || 'Cliente Demo',
             cliente_telefono: telefonoDemo || '',
-            cliente_email: '',
+            cliente_email: emailDemo || '',
             numero_personas: personas,
             fecha: fechaISO,
             hora: hora24,
@@ -178,7 +179,7 @@ const DemoReserva = ({ visible, onCerrar, selectedEvent, demoOnly = false }) => 
           let cliente_id = null;
           if (nombreDemo && nombreDemo.trim()) {
             try {
-              const respCliente = await crearCliente({ nombre: nombreDemo.trim(), telefono: telefonoDemo.trim(), email: '' });
+              const respCliente = await crearCliente({ nombre: nombreDemo.trim(), telefono: telefonoDemo.trim(), email: (emailDemo || '').trim() });
               // respCliente may return { cliente: { id: ... } } or { id }
               cliente_id = respCliente?.cliente?.id || respCliente?.id || null;
             } catch (e) {
@@ -191,6 +192,7 @@ const DemoReserva = ({ visible, onCerrar, selectedEvent, demoOnly = false }) => 
 
           const datosReserva = {
             cliente_id: cliente_id,
+            cliente_email: emailDemo || '',
             numero_personas: personas,
             fecha: fechaISO,
             hora: hora24,
@@ -474,6 +476,19 @@ const DemoReserva = ({ visible, onCerrar, selectedEvent, demoOnly = false }) => 
                   value={telefonoDemo}
                   onChange={(e) => setTelefonoDemo(e.target.value)}
                   required
+                />
+              </div>
+
+              <div className="demo-campo-email">
+                <label>
+                  <img src="https://img.icons8.com/ios-filled/14/999999/email.png" alt="" width="14" height="14" />
+                  Email (opcional)
+                </label>
+                <input
+                  type="email"
+                  placeholder="ejemplo@correo.com"
+                  value={emailDemo}
+                  onChange={(e) => setEmailDemo(e.target.value)}
                 />
               </div>
 

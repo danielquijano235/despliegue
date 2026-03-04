@@ -244,6 +244,17 @@ const VistaClientes = ({ busquedaGlobal }) => {
     return nombre ? nombre[0].toUpperCase() : "?";
   };
 
+  const formatearTelefono = (tel) => {
+    if (!tel) return "";
+    const raw = String(tel).trim();
+    if (raw.startsWith('+')) return raw;
+    const digits = raw.replace(/\D/g, '');
+    if (!digits) return raw;
+    if (digits.startsWith('57')) return `+${digits}`;
+    if (digits.length >= 7) return `+57 ${digits}`;
+    return raw;
+  };
+
   // Helper: resaltar coincidencias en texto
   const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const highlight = (text = '', q = '') => {
@@ -453,7 +464,7 @@ const VistaClientes = ({ busquedaGlobal }) => {
                       </span>
                     </div>
                   </td>
-                  <td className="tabla-fecha">{cliente.telefono ? highlight(cliente.telefono, busqueda) : "—"}</td>
+                  <td className="tabla-fecha">{cliente.telefono ? highlight(formatearTelefono(cliente.telefono), busqueda) : "—"}</td>
                   <td className="tabla-fecha">{cliente.email ? highlight(cliente.email, busqueda) : "—"}</td>
                   <td>
                     <span

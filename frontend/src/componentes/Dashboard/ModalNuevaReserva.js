@@ -39,6 +39,7 @@ const ModalNuevaReserva = ({
     cliente_id: "",
     cliente_nombre: "",
     cliente_telefono: "",
+    cliente_email: "",
     fecha: "",
     hora: "",
     numero_personas: "",
@@ -63,6 +64,7 @@ const ModalNuevaReserva = ({
         cliente_id: reserva.cliente_id || reserva.cliente || "",
         cliente_nombre: reserva.cliente_nombre || reserva.cliente || "",
         cliente_telefono: reserva.cliente_telefono || "",
+        cliente_email: reserva.cliente_email || "",
         fecha: reserva.fecha || "",
         hora: reserva.hora || "",
         numero_personas:
@@ -75,6 +77,7 @@ const ModalNuevaReserva = ({
         cliente_id: "",
         cliente_nombre: "",
         cliente_telefono: "",
+        cliente_email: "",
         fecha: "",
         hora: "",
         numero_personas: "",
@@ -164,10 +167,10 @@ const ModalNuevaReserva = ({
         datosReserva.mesa_id = null;
       }
 
-      // Si no hay cliente_id, intentar crear cliente usando nombre y telefono
+      // Si no hay cliente_id, intentar crear cliente usando nombre, telefono y email
       if (!datosReserva.cliente_id && datosReserva.cliente_nombre) {
         try {
-          const res = await crearCliente({ nombre: datosReserva.cliente_nombre, telefono: datosReserva.cliente_telefono || '' });
+          const res = await crearCliente({ nombre: datosReserva.cliente_nombre, telefono: datosReserva.cliente_telefono || '', email: datosReserva.cliente_email || '' });
           const nuevo = res.cliente || res;
           datosReserva.cliente_id = nuevo.id || datosReserva.cliente_id;
         } catch (err) {
@@ -181,7 +184,8 @@ const ModalNuevaReserva = ({
         await onCrear(datosReserva);
         setFormulario({
           cliente_id: "",
-          fecha: "",
+              cliente_email: "",
+              fecha: "",
           hora: "",
           numero_personas: "",
           mesa_id: "",
@@ -290,6 +294,15 @@ const ModalNuevaReserva = ({
                   value={formulario.cliente_telefono || ''}
                   onChange={manejarCambio}
                   required
+                />
+
+                <input
+                  type="email"
+                  name="cliente_email"
+                  className="campo-input"
+                  placeholder="Email (opcional)"
+                  value={formulario.cliente_email || ''}
+                  onChange={manejarCambio}
                 />
 
                 {showSuggestions && searchText && (
