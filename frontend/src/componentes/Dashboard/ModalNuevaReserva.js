@@ -167,7 +167,10 @@ const ModalNuevaReserva = ({
         datosReserva.mesa_id = null;
       }
 
-      // Si no hay cliente_id, intentar crear cliente usando nombre, telefono y email
+      // Si no hay `cliente_id` intentamos crear el cliente al vuelo.
+      // Esto permite al usuario indicar nombre/telefono/email en el modal y
+      // que el sistema cree el registro de cliente automáticamente antes de
+      // crear la reserva. No bloqueamos el flujo si la creación falla.
       if (!datosReserva.cliente_id && datosReserva.cliente_nombre) {
         try {
           const res = await crearCliente({ nombre: datosReserva.cliente_nombre, telefono: datosReserva.cliente_telefono || '', email: datosReserva.cliente_email || '' });

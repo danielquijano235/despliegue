@@ -44,6 +44,10 @@ const DemoReserva = ({ visible, onCerrar, selectedEvent, demoOnly = false }) => 
   // ============================================
   // ESTADOS
   // ============================================
+  // Nota: aquí se mantienen los estados del flujo de reserva demo.
+  // - `paso`: paso actual del wizard (1 personas, 2 fecha, 3 hora)
+  // - `personas`, `diaSeleccionado`, `horaSeleccionada`: datos elegidos por el usuario
+  // - `nombreDemo`, `telefonoDemo`, `emailDemo`: información de contacto del demo
   const [paso, setPaso] = useState(1);
   const [personas, setPersonas] = useState(2);
   const [mesActual, setMesActual] = useState(new Date().getMonth());
@@ -135,6 +139,9 @@ const DemoReserva = ({ visible, onCerrar, selectedEvent, demoOnly = false }) => 
   };
 
   // Confirmar reserva demo
+  // Función que orquesta el envío o guardado local de la reserva.
+  // - Si `demoOnly` es true (hero demo) se guarda en `localStorage` y no se llama al backend.
+  // - Si no, intenta verificar sesión y crear la reserva en backend; si no hay sesión, no falla la UX.
   const confirmarReserva = () => {
     // Enviar reserva: si hay sesión, crear en backend; si no, guardar localmente (demo)
     const enviar = async () => {
@@ -142,10 +149,11 @@ const DemoReserva = ({ visible, onCerrar, selectedEvent, demoOnly = false }) => 
       try {
         const notaEvento = selectedEvent ? `Evento: ${selectedEvent.title}` : '';
 
-        // If this modal is demo-only (hero), always store locally and do not send to backend
+        // Si este modal es solo demo (hero), almacenar localmente y NO enviar al backend
         if (demoOnly) {
           const almacen = JSON.parse(localStorage.getItem('demo_reservas') || '[]');
           const fechaISO = diaSeleccionado ? `${anioActual}-${String(mesActual+1).padStart(2,'0')}-${String(diaSeleccionado).padStart(2,'0')}` : '';
+          // parseHora: convierte strings tipo "7:30 pm" a formato 24h "19:30:00"
           const parseHora = (h) => {
             if (!h) return '';
             const m = h.match(/(\d{1,2}):(\d{2})\s*(am|pm)?/i);
@@ -173,34 +181,36 @@ const DemoReserva = ({ visible, onCerrar, selectedEvent, demoOnly = false }) => 
           almacen.unshift(demo);
           localStorage.setItem('demo_reservas', JSON.stringify(almacen));
         } else {
+          // Intentar verificar sesión en backend. Si existe sesión autenticada,
+          // creamos el cliente (si se proporcionó nombre) y luego la reserva.
           const sesion = await verificarSesion().catch(() => null);
           if (sesion && sesion.autenticado) {
-          // Crear cliente si hay nombre
-          let cliente_id = null;
-          if (nombreDemo && nombreDemo.trim()) {
-            try {
-              const respCliente = await crearCliente({ nombre: nombreDemo.trim(), telefono: telefonoDemo.trim(), email: (emailDemo || '').trim() });
-              // respCliente may return { cliente: { id: ... } } or { id }
-              cliente_id = respCliente?.cliente?.id || respCliente?.id || null;
-            } catch (e) {
-              console.warn('No se pudo crear cliente demo:', e);
+            // Crear cliente si se dio nombre (incluye teléfono y email opcional)
+            let cliente_id = null;
+            if (nombreDemo && nombreDemo.trim()) {
+              try {
+                const respCliente = await crearCliente({ nombre: nombreDemo.trim(), telefono: telefonoDemo.trim(), email: (emailDemo || '').trim() });
+                // `crearCliente` puede devolver { cliente: { id } } o { id }
+                cliente_id = respCliente?.cliente?.id || respCliente?.id || null;
+              } catch (e) {
+                console.warn('No se pudo crear cliente demo:', e);
+              }
             }
-          }
 
-          const fechaISO = diaSeleccionado ? `${anioActual}-${String(mesActual+1).padStart(2,'0')}-${String(diaSeleccionado).padStart(2,'0')}` : '';
-          const hora24 = horaSeleccionada && horaSeleccionada.includes(':') ? (horaSeleccionada.length === 8 ? horaSeleccionada : horaSeleccionada + ':00') : '';
+            const fechaISO = diaSeleccionado ? `${anioActual}-${String(mesActual+1).padStart(2,'0')}-${String(diaSeleccionado).padStart(2,'0')}` : '';
+            const hora24 = horaSeleccionada && horaSeleccionada.includes(':') ? (horaSeleccionada.length === 8 ? horaSeleccionada : horaSeleccionada + ':00') : '';
 
-          const datosReserva = {
-            cliente_id: cliente_id,
-            cliente_email: emailDemo || '',
-            numero_personas: personas,
-            fecha: fechaISO,
-            hora: hora24,
-            mesa_id: null,
-            notas_especiales: notaEvento
-          };
+            const datosReserva = {
+              cliente_id: cliente_id,
+              cliente_email: emailDemo || '',
+              numero_personas: personas,
+              fecha: fechaISO,
+              hora: hora24,
+              mesa_id: null,
+              notas_especiales: notaEvento
+            };
 
-          await crearReserva(datosReserva);
+            await crearReserva(datosReserva);
           }
         }
 
@@ -545,6 +555,7 @@ const DemoReserva = ({ visible, onCerrar, selectedEvent, demoOnly = false }) => 
                   setHoraSeleccionada(null);
                   setConfirmado(false);
                   setNombreDemo('');
+                  setEmailDemo('');
                 }}>
                   <img src="https://img.icons8.com/ios-filled/16/FDB022/refresh--v1.png" alt="" width="16" height="16" />
                   Probar otra vez

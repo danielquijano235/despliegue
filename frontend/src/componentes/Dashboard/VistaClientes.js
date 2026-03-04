@@ -244,6 +244,9 @@ const VistaClientes = ({ busquedaGlobal }) => {
     return nombre ? nombre[0].toUpperCase() : "?";
   };
 
+  // Formatea teléfonos para presentación en la tabla de clientes.
+  // Misma lógica usada en `VistaReservas`: si falta el prefijo se añade +57 para
+  // mantener consistencia visual con los datos de ejemplo / base de datos.
   const formatearTelefono = (tel) => {
     if (!tel) return "";
     const raw = String(tel).trim();
