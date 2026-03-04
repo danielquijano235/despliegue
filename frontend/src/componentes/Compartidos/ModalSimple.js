@@ -1,5 +1,15 @@
 import React, { useEffect } from 'react';
 
+/*
+  ModalSimple
+  -----------------
+  Componente modal genérico y ligero usado para diálogos simples.
+  - `open`: controla visibilidad
+  - `title`: título mostrado en el header (si `hideHeader` es false)
+  - `onClose`: se dispara al cerrar por fuera o al pulsar la X
+  Este modal usa estilos en línea para que sea independiente y fácil de insertar.
+*/
+
 const overlay = {
   position: 'fixed',
   top: 0,
