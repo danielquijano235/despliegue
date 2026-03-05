@@ -3,10 +3,10 @@
  * BOOKIT - Componente FormularioLogin
  * Archivo: componentes/Login/FormularioLogin.js
  * ============================================
- * 
+ *
  * Propósito: Formulario de inicio de sesión con validación.
  * Envía las credenciales al backend PHP y redirige al dashboard.
- * 
+ *
  * Estados:
  *   - email: Valor del campo de email
  *   - contrasena: Valor del campo de contraseña
@@ -15,17 +15,17 @@
  *   - cargando: Indica si está procesando la petición
  */
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { login } from '../../servicios/api';
-import Boton from '../Compartidos/Boton';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { login } from "../../servicios/api";
+import Boton from "../Compartidos/Boton";
 
 const FormularioLogin = () => {
   // Estados del formulario
-  const [email, setEmail] = useState('');
-  const [contrasena, setContrasena] = useState('');
+  const [email, setEmail] = useState("");
+  const [contrasena, setContrasena] = useState("");
   const [mostrarContrasena, setMostrarContrasena] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [cargando, setCargando] = useState(false);
 
   const navigate = useNavigate();
@@ -36,17 +36,17 @@ const FormularioLogin = () => {
    */
   const manejarSubmit = async (e) => {
     e.preventDefault(); // Evitar que la página se recargue
-    setError('');        // Limpiar error anterior
+    setError(""); // Limpiar error anterior
 
     // Validación básica en el frontend
     if (!email || !contrasena) {
-      setError('Por favor, completa todos los campos');
+      setError("Por favor, completa todos los campos");
       return;
     }
 
     // Validar formato de email
-    if (!email.includes('@')) {
-      setError('Por favor, ingresa un email válido');
+    if (!email.includes("@")) {
+      setError("Por favor, ingresa un email válido");
       return;
     }
 
@@ -55,13 +55,15 @@ const FormularioLogin = () => {
     try {
       // Enviar petición al backend
       const respuesta = await login(email, contrasena);
-      
+
       // Si el login es exitoso, guardar datos y redirigir
-      localStorage.setItem('usuario', JSON.stringify(respuesta.usuario));
-      navigate('/dashboard');
+      localStorage.setItem("usuario", JSON.stringify(respuesta.usuario));
+      navigate("/dashboard");
     } catch (err) {
       // Si hay error, mostrar mensaje
-      setError(err.message || 'Error al iniciar sesión. Verifica tus credenciales.');
+      setError(
+        err.message || "Error al iniciar sesión. Verifica tus credenciales.",
+      );
     } finally {
       setCargando(false); // Ocultar indicador de carga
     }
@@ -70,8 +72,16 @@ const FormularioLogin = () => {
   return (
     <div className="login-tarjeta">
       {/* Logo */}
-      <div className="login-logo" style={{cursor: 'pointer'}} onClick={() => navigate('/')}> 
-        <img src="/assets/images/logo-bookit.png" alt="BookIt" className="login-logo-img" />
+      <div
+        className="login-logo"
+        style={{ cursor: "pointer" }}
+        onClick={() => navigate("/")}
+      >
+        <img
+          src="/assets/images/logo-bookit.png"
+          alt="BookIt"
+          className="login-logo-img"
+        />
       </div>
 
       {/* Título */}
@@ -87,7 +97,14 @@ const FormularioLogin = () => {
         <div className="campo-grupo">
           <label className="campo-label">Email</label>
           <div className="campo-input-contenedor">
-            <span className="campo-icono"><img src="https://img.icons8.com/ios-filled/18/999999/email.png" alt="email" width="18" height="18" /></span>
+            <span className="campo-icono">
+              <img
+                src="https://img.icons8.com/ios-filled/18/999999/email.png"
+                alt="email"
+                width="18"
+                height="18"
+              />
+            </span>
             <input
               type="email"
               className="campo-input"
@@ -103,9 +120,16 @@ const FormularioLogin = () => {
         <div className="campo-grupo">
           <label className="campo-label">Contraseña</label>
           <div className="campo-input-contenedor">
-            <span className="campo-icono"><img src="https://img.icons8.com/ios-filled/18/999999/lock.png" alt="contraseña" width="18" height="18" /></span>
+            <span className="campo-icono">
+              <img
+                src="https://img.icons8.com/ios-filled/18/999999/lock.png"
+                alt="contraseña"
+                width="18"
+                height="18"
+              />
+            </span>
             <input
-              type={mostrarContrasena ? 'text' : 'password'}
+              type={mostrarContrasena ? "text" : "password"}
               className="campo-input"
               placeholder="Tu contraseña"
               value={contrasena}
@@ -118,7 +142,16 @@ const FormularioLogin = () => {
               className="btn-mostrar-contrasena"
               onClick={() => setMostrarContrasena(!mostrarContrasena)}
             >
-              <img src={mostrarContrasena ? "https://img.icons8.com/ios-filled/20/666666/invisible.png" : "https://img.icons8.com/ios-filled/20/666666/visible.png"} alt="toggle" width="20" height="20" />
+              <img
+                src={
+                  mostrarContrasena
+                    ? "https://img.icons8.com/ios-filled/20/666666/invisible.png"
+                    : "https://img.icons8.com/ios-filled/20/666666/visible.png"
+                }
+                alt="toggle"
+                width="20"
+                height="20"
+              />
             </button>
           </div>
         </div>
@@ -129,12 +162,19 @@ const FormularioLogin = () => {
             <input type="checkbox" />
             Recordarme
           </label>
-          <a href="#" className="link-olvide">¿Olvidaste tu contraseña?</a>
+          <a href="#" className="link-olvide">
+            ¿Olvidaste tu contraseña?
+          </a>
         </div>
 
         {/* Botón de login */}
-        <Boton tipo="submit" variante="primario" onClick={null} disabled={cargando}>
-          {cargando ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+        <Boton
+          tipo="submit"
+          variante="primario"
+          onClick={null}
+          disabled={cargando}
+        >
+          {cargando ? "Iniciando sesión..." : "Iniciar Sesión"}
         </Boton>
 
         {/* Separador */}
@@ -142,10 +182,22 @@ const FormularioLogin = () => {
           <span>o</span>
         </div>
 
-        {/* Link de registro */}
+        {/* Link de contacto en vez de registro */}
         <p className="login-registro">
-          ¿No tienes cuenta?{' '}
-          <a href="#">Regístrate aquí</a>
+          ¿No tienes cuenta?{" "}
+          <a
+            href="/#contacto"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/");
+              setTimeout(() => {
+                const contacto = document.getElementById("contacto");
+                if (contacto) contacto.scrollIntoView({ behavior: "smooth" });
+              }, 300);
+            }}
+          >
+            Contáctanos
+          </a>
         </p>
       </form>
     </div>

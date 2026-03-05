@@ -132,3 +132,28 @@ INSERT INTO reservas (cliente_id, usuario_id, mesa_id, numero_personas, fecha, h
 (6, @usuario_id, 6, 4, DATE_SUB(CURDATE(), INTERVAL 1 DAY), '21:00:00', 'completada'),
 (7, @usuario_id, 7, 2, DATE_SUB(CURDATE(), INTERVAL 1 DAY), '21:30:00', 'completada'),
 (8, @usuario_id, 8, 4, DATE_SUB(CURDATE(), INTERVAL 1 DAY), '22:00:00', 'completada');
+
+-- ============================================
+-- TABLA: resenas
+-- Descripción: Reseñas de clientes sobre el restaurante
+-- ============================================
+CREATE TABLE resenas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL COMMENT 'ID del restaurante',
+    cliente VARCHAR(100) NOT NULL COMMENT 'Nombre del cliente',
+    comentario TEXT NOT NULL COMMENT 'Comentario de la reseña',
+    calificacion INT NOT NULL COMMENT 'Calificación (1-5)',
+    fecha DATE NOT NULL DEFAULT CURRENT_DATE COMMENT 'Fecha de la reseña',
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    INDEX idx_usuario (usuario_id),
+    INDEX idx_calificacion (calificacion)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Reseñas de clientes';
+
+-- ============================================
+-- RESEÑAS DE PRUEBA
+-- ============================================
+INSERT INTO resenas (usuario_id, cliente, comentario, calificacion, fecha) VALUES
+(@usuario_id, 'Carlos Rodríguez', 'Excelente atención y comida espectacular.', 5, '2026-03-01'),
+(@usuario_id, 'María González', 'Muy buena experiencia en general.', 4, '2026-03-02'),
+(@usuario_id, 'Ana López', 'Celebramos un cumpleaños y todo salió perfecto.', 5, '2026-03-03'),
+(@usuario_id, 'Juan Pérez', 'La comida estaba bien pero esperábamos más variedad.', 3, '2026-03-04');

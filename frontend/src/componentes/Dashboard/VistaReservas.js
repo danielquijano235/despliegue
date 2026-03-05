@@ -157,7 +157,7 @@ const VistaReservas = () => {
       // con las reservas demo que se guardaron localmente (flujo sin sesión).
       // Esto permite que las reservas hechas en modo demo se vean en el dashboard
       // en la misma máquina/navegador aunque no lleguen al backend.
-      const demo = JSON.parse(localStorage.getItem('demo_reservas') || '[]');
+      const demo = JSON.parse(localStorage.getItem("demo_reservas") || "[]");
       // `datos` normalmente es un array desde el backend; colocamos primero las demo
       // locales para que se vean inmediatamente en la tabla.
       const todos = demo.concat(Array.isArray(datos) ? datos : []);
@@ -165,7 +165,7 @@ const VistaReservas = () => {
     } catch (error) {
       console.error("Error al cargar reservas:", error);
       // On error, still include demo reservations if any
-      const demo = JSON.parse(localStorage.getItem('demo_reservas') || '[]');
+      const demo = JSON.parse(localStorage.getItem("demo_reservas") || "[]");
       setReservas(demo.length ? demo : reservasEjemplo);
     } finally {
       setCargando(false);
@@ -188,10 +188,13 @@ const VistaReservas = () => {
         await cargarClientes();
       }
     } catch (error) {
-      console.error('No se pudieron cargar los clientes antes de crear:', error);
+      console.error(
+        "No se pudieron cargar los clientes antes de crear:",
+        error,
+      );
     }
     setReservaDetalle(null);
-    setModalModo('crear');
+    setModalModo("crear");
     setModalVisible(true);
   };
 
@@ -231,7 +234,8 @@ const VistaReservas = () => {
 
   const manejarEliminar = (id) => {
     const reserva = reservas.find((r) => r.id === id);
-    const nombre = reserva?.cliente_nombre || reserva?.cliente || "Reserva #" + id;
+    const nombre =
+      reserva?.cliente_nombre || reserva?.cliente || "Reserva #" + id;
     setConfirmPayload({ id, nombre });
     setConfirmOpen(true);
   };
@@ -329,12 +333,12 @@ const VistaReservas = () => {
   const formatearTelefono = (tel) => {
     if (!tel) return "";
     const raw = String(tel).trim();
-    if (raw.startsWith('+')) return raw; // ya tiene prefijo
+    if (raw.startsWith("+")) return raw; // ya tiene prefijo
     // Extraer solo dígitos
-    const digits = raw.replace(/\D/g, '');
+    const digits = raw.replace(/\D/g, "");
     if (!digits) return raw;
     // Si ya incluye código de país '57' al inicio, anteponer '+'
-    if (digits.startsWith('57')) return `+${digits}`;
+    if (digits.startsWith("57")) return `+${digits}`;
     // Si parece número móvil local (10 dígitos que empiezan por 3) o al menos 7 dígitos, añadir +57
     if (digits.length >= 7) return `+57 ${digits}`;
     return raw;
@@ -484,7 +488,9 @@ const VistaReservas = () => {
                           {formatearTelefono(reserva.cliente_telefono) || ""}
                         </span>
                         {reserva.cliente_email ? (
-                          <span className="tabla-cliente-email">{reserva.cliente_email}</span>
+                          <span className="tabla-cliente-email">
+                            {reserva.cliente_email}
+                          </span>
                         ) : null}
                       </div>
                     </div>
@@ -596,11 +602,15 @@ const VistaReservas = () => {
                           alt="confirmar"
                           width={
                             reserva.estado !== "confirmada" &&
-                            reserva.estado !== "cancelada" ? 28 : 20
+                            reserva.estado !== "cancelada"
+                              ? 28
+                              : 20
                           }
                           height={
                             reserva.estado !== "confirmada" &&
-                            reserva.estado !== "cancelada" ? 28 : 20
+                            reserva.estado !== "cancelada"
+                              ? 28
+                              : 20
                           }
                           style={{ display: "block" }}
                         />
@@ -655,6 +665,50 @@ const VistaReservas = () => {
                           style={{ display: "block" }}
                         />
                       </Boton>
+                      <Boton
+                        variante="ghost"
+                        className={`accion-btn accion-cancelar ${
+                          reserva.estado === "cancelada"
+                            ? "accion-cancelar--disabled"
+                            : "accion-cancelar--activo"
+                        }`}
+                        onClick={() => {
+                          if (reserva.estado !== "cancelada")
+                            manejarCambiarEstado(reserva.id, "cancelada");
+                        }}
+                        title="Cancelar reserva"
+                        aria-label="Cancelar reserva"
+                        disabled={reserva.estado === "cancelada"}
+                        style={{
+                          padding: "0",
+                          width: "36px",
+                          height: "36px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background:
+                            reserva.estado !== "cancelada"
+                              ? "#fa314a"
+                              : "transparent",
+                          borderRadius: "8px",
+                          boxShadow:
+                            reserva.estado !== "cancelada"
+                              ? "0 6px 12px rgba(250,49,74,0.18)"
+                              : "none",
+                        }}
+                      >
+                        <img
+                          src={
+                            reserva.estado !== "cancelada"
+                              ? "https://img.icons8.com/ios-filled/24/fa314a/delete-sign.png"
+                              : "https://img.icons8.com/ios-filled/20/fa314a/delete-sign.png"
+                          }
+                          alt="cancelar"
+                          width={reserva.estado !== "cancelada" ? 24 : 20}
+                          height={reserva.estado !== "cancelada" ? 24 : 20}
+                          style={{ display: "block" }}
+                        />
+                      </Boton>
                     </div>
                   </td>
                 </tr>
@@ -688,17 +742,24 @@ const VistaReservas = () => {
         onActualizar={manejarActualizar}
         reserva={reservaDetalle}
         modo={modalModo}
-        clientes={modalModo === 'crear' ? clientes : []} // evitar pasar lista completa cuando editando
+        clientes={modalModo === "crear" ? clientes : []} // evitar pasar lista completa cuando editando
         mesas={[]}
       />
 
       {/* ConfirmDialog para eliminar reserva */}
       <ConfirmDialog
         abierto={confirmOpen}
-        titulo={confirmPayload ? `Eliminar reserva` : 'Eliminar'}
-        mensaje={confirmPayload ? `¿Estás seguro de eliminar la reserva de "${confirmPayload.nombre}"? Esta acción no se puede deshacer.` : '¿Estás seguro?'}
+        titulo={confirmPayload ? `Eliminar reserva` : "Eliminar"}
+        mensaje={
+          confirmPayload
+            ? `¿Estás seguro de eliminar la reserva de "${confirmPayload.nombre}"? Esta acción no se puede deshacer.`
+            : "¿Estás seguro?"
+        }
         onConfirm={ejecutarEliminar}
-        onCancel={() => { setConfirmOpen(false); setConfirmPayload(null); }}
+        onCancel={() => {
+          setConfirmOpen(false);
+          setConfirmPayload(null);
+        }}
       />
     </div>
   );

@@ -1,15 +1,18 @@
 /**
  * ============================================
- * BOOKIT - Componente TopClientes
- * Archivo: componentes/Dashboard/TopClientes.js
+ * BOOKIT - Componente TopVisitas
+ * Archivo: componentes/Dashboard/TopVisitas.js
  * ============================================
  *
- * Muestra una lista de los clientes con más reservas.
+ * Muestra una lista de los clientes con más visitas.
  */
 import React from "react";
 
-const TopClientes = ({ clientes }) => {
-  const lista = clientes || [];
+const TopVisitas = ({ clientes }) => {
+  const lista = (clientes || [])
+    .slice()
+    .sort((a, b) => (b.visitas || 0) - (a.visitas || 0))
+    .slice(0, 5);
 
   return (
     <div className="top-clientes-card">
@@ -58,7 +61,7 @@ const TopClientes = ({ clientes }) => {
                   borderRadius: 999,
                 }}
               >
-                {c.reservas}
+                {c.visitas}
               </span>
             </div>
           </li>
@@ -68,4 +71,4 @@ const TopClientes = ({ clientes }) => {
   );
 };
 
-export default TopClientes;
+export default TopVisitas;

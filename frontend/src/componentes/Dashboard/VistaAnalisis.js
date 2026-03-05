@@ -11,15 +11,16 @@
  *   - metricas: Datos de métricas actuales
  *   - datosGrafica: Datos para gráficos
  */
-import React, { useEffect, useState } from 'react';
-import TarjetaMetrica from './TarjetaMetrica';
-import GraficaReservas from './GraficaReservas';
-import GraficaMensual from './GraficaMensual';
-import GraficaHoras from './GraficaHoras';
-import TopClientes from './TopClientes';
-import EstadoReservas from './EstadoReservas';
-import UltimasReservas from './UltimasReservas';
-import { obtenerTodasReservas } from '../../servicios/api';
+import React, { useEffect, useState } from "react";
+import TarjetaMetrica from "./TarjetaMetrica";
+import GraficaReservas from "./GraficaReservas";
+import GraficaMensual from "./GraficaMensual";
+import GraficaHoras from "./GraficaHoras";
+import TopClientes from "./TopClientes";
+import TopVisitas from "./TopVisitas";
+import EstadoReservas from "./EstadoReservas";
+import UltimasReservas from "./UltimasReservas";
+import { obtenerTodasReservas } from "../../servicios/api";
 
 const VistaAnalisis = ({ metricas, datosGrafica }) => {
   // ============================================
@@ -29,13 +30,14 @@ const VistaAnalisis = ({ metricas, datosGrafica }) => {
   const [horasData, setHorasData] = useState(null);
   const [todasReservas, setTodasReservas] = useState(null);
   const [topClientes, setTopClientes] = useState(null);
+  const [topVisitas, setTopVisitas] = useState(null);
   // Métricas calculadas a partir de `metricas` (prop) y de todas las reservas
   const promedioPorPersona = 65000; // mismo supuesto que el backend
   const calcularMetricas = (todas, metricasProp) => {
     // defaults
     const ahora = new Date();
     const year = ahora.getFullYear();
-    const month = String(ahora.getMonth() + 1).padStart(2, '0');
+    const month = String(ahora.getMonth() + 1).padStart(2, "0");
 
     const resultado = {
       reservas_mes: 0,
@@ -43,7 +45,10 @@ const VistaAnalisis = ({ metricas, datosGrafica }) => {
       clientes_recurrentes: 0,
       promedio_reservas_dia: 0,
       tasa_cancelacion: 0,
-      ocupacion_promedio: metricasProp && metricasProp.ocupacion ? metricasProp.ocupacion.porcentaje : 0,
+      ocupacion_promedio:
+        metricasProp && metricasProp.ocupacion
+          ? metricasProp.ocupacion.porcentaje
+          : 0,
     };
 
     if (!todas || todas.length === 0) return resultado;
@@ -51,37 +56,51 @@ const VistaAnalisis = ({ metricas, datosGrafica }) => {
     // Reservas del mes actual
     const reservasMes = todas.filter((r) => {
       if (!r.fecha) return false;
-      const ymd = r.fecha.split('T')[0] || r.fecha;
-      const [y, m] = ymd.split('-');
+      const ymd = r.fecha.split("T")[0] || r.fecha;
+      const [y, m] = ymd.split("-");
       return y == year && m == month;
     });
     resultado.reservas_mes = reservasMes.length;
 
     // Ingresos estimados del mes
-    const totalPersonas = reservasMes.reduce((s, r) => s + (Number(r.numero_personas) || 0), 0);
+    const totalPersonas = reservasMes.reduce(
+      (s, r) => s + (Number(r.numero_personas) || 0),
+      0,
+    );
     resultado.ingresos_mes = totalPersonas * promedioPorPersona;
 
     // Promedio reservas por día (días del mes)
     const diasMes = new Date(year, parseInt(month), 0).getDate();
-    resultado.promedio_reservas_dia = diasMes > 0 ? (resultado.reservas_mes / diasMes).toFixed(1) : 0;
+    resultado.promedio_reservas_dia =
+      diasMes > 0 ? (resultado.reservas_mes / diasMes).toFixed(1) : 0;
 
     // Tasa de cancelación (sobre el mes)
-    const canceladas = reservasMes.filter((r) => (r.estado || '').toLowerCase() === 'cancelada').length;
-    resultado.tasa_cancelacion = resultado.reservas_mes > 0 ? Number(((canceladas / resultado.reservas_mes) * 100).toFixed(1)) : 0;
+    const canceladas = reservasMes.filter(
+      (r) => (r.estado || "").toLowerCase() === "cancelada",
+    ).length;
+    resultado.tasa_cancelacion =
+      resultado.reservas_mes > 0
+        ? Number(((canceladas / resultado.reservas_mes) * 100).toFixed(1))
+        : 0;
 
     // Clientes recurrentes: % de clientes con más de 1 reserva (todas las reservas)
     const clientesMap = {};
     todas.forEach((r) => {
-      const nombre = r.cliente_nombre || r.cliente || 'Cliente desconocido';
+      const nombre = r.cliente_nombre || r.cliente || "Cliente desconocido";
       if (!clientesMap[nombre]) clientesMap[nombre] = 0;
       clientesMap[nombre] += 1;
     });
     const totalClientes = Object.keys(clientesMap).length;
     const recurrentes = Object.values(clientesMap).filter((c) => c > 1).length;
-    resultado.clientes_recurrentes = totalClientes > 0 ? Math.round((recurrentes / totalClientes) * 100) : 0;
+    resultado.clientes_recurrentes =
+      totalClientes > 0 ? Math.round((recurrentes / totalClientes) * 100) : 0;
 
     // Si metricasProp incluye ocupacion, preferir esa cifra
-    if (metricasProp && metricasProp.ocupacion && metricasProp.ocupacion.porcentaje) {
+    if (
+      metricasProp &&
+      metricasProp.ocupacion &&
+      metricasProp.ocupacion.porcentaje
+    ) {
       resultado.ocupacion_promedio = metricasProp.ocupacion.porcentaje;
     }
 
@@ -91,26 +110,26 @@ const VistaAnalisis = ({ metricas, datosGrafica }) => {
   const metricasAnalisis = calcularMetricas(todasReservas, metricas);
 
   const datosGraficaMensual = {
-    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+    labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun"],
     datasets: [
       {
-        label: 'Reservas Mensuales',
+        label: "Reservas Mensuales",
         data: [180, 220, 195, 240, 265, 245],
-        backgroundColor: '#4A90E2',
-        borderColor: '#4A90E2',
+        backgroundColor: "#4A90E2",
+        borderColor: "#4A90E2",
         borderWidth: 1,
       },
     ],
   };
 
   const datosIngresos = {
-    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+    labels: ["Sem 1", "Sem 2", "Sem 3", "Sem 4"],
     datasets: [
       {
-        label: 'Ingresos por Semana',
+        label: "Ingresos por Semana",
         data: [4200, 4800, 5100, 4400],
-        backgroundColor: '#10B981',
-        borderColor: '#10B981',
+        backgroundColor: "#10B981",
+        borderColor: "#10B981",
         borderWidth: 1,
       },
     ],
@@ -118,46 +137,51 @@ const VistaAnalisis = ({ metricas, datosGrafica }) => {
 
   // Datos mock para horas pico (pueden reemplazarse por datos reales desde la API)
   const datosHorasPico = {
-    '10:00': 2,
-    '11:00': 5,
-    '12:00': 12,
-    '13:00': 18,
-    '14:00': 10,
-    '15:00': 6,
-    '16:00': 8,
-    '17:00': 22,
-    '18:00': 35,
-    '19:00': 50,
-    '20:00': 48,
-    '21:00': 30,
-    '22:00': 10,
+    "10:00": 2,
+    "11:00": 5,
+    "12:00": 12,
+    "13:00": 18,
+    "14:00": 10,
+    "15:00": 6,
+    "16:00": 8,
+    "17:00": 22,
+    "18:00": 35,
+    "19:00": 50,
+    "20:00": 48,
+    "21:00": 30,
+    "22:00": 10,
   };
 
   // ============================================
   // FUNCIONES AUXILIARES
   // ============================================
   const formatearMoneda = (valor) => {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
+    return new Intl.NumberFormat("es-CO", {
+      style: "currency",
+      currency: "COP",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(valor);
   };
 
   const obtenerFechaFormateada = () => {
-    return new Date().toLocaleDateString('es-ES', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    return new Date().toLocaleDateString("es-ES", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
   useEffect(() => {
     const construirMensual = async () => {
       // Si metricas incluye datos mensuales ya formateados, usarlos
-      if (metricas && metricas.mensual && metricas.mensual.labels && metricas.mensual.data) {
+      if (
+        metricas &&
+        metricas.mensual &&
+        metricas.mensual.labels &&
+        metricas.mensual.data
+      ) {
         setMensualData(metricas.mensual);
         return;
       }
@@ -165,22 +189,36 @@ const VistaAnalisis = ({ metricas, datosGrafica }) => {
       try {
         const todas = await obtenerTodasReservas();
         setTodasReservas(todas);
+        // Obtener clientes reales para TopVisitas
+        try {
+          const clientes = await import("../../servicios/api").then((m) =>
+            m.obtenerTodosClientes(),
+          );
+          setTopVisitas(
+            (await clientes)
+              .slice()
+              .sort((a, b) => (b.visitas || 0) - (a.visitas || 0))
+              .slice(0, 5),
+          );
+        } catch (err) {
+          setTopVisitas(null);
+        }
         // todas: array de reservas con campo `fecha` (YYYY-MM-DD)
         // Construir los últimos 12 meses (labels)
         const ahora = new Date();
         const meses = [];
         for (let i = 11; i >= 0; i--) {
           const d = new Date(ahora.getFullYear(), ahora.getMonth() - i, 1);
-          const label = d.toLocaleString('es-ES', { month: 'short' });
-          const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; // YYYY-MM
+          const label = d.toLocaleString("es-ES", { month: "short" });
+          const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; // YYYY-MM
           meses.push({ label, key });
         }
 
         const conteos = meses.map(() => 0);
         todas.forEach((r) => {
           if (!r.fecha) return;
-          const ymd = r.fecha.split('T')[0] || r.fecha; // soportar ISO
-          const [y, m] = ymd.split('-');
+          const ymd = r.fecha.split("T")[0] || r.fecha; // soportar ISO
+          const [y, m] = ymd.split("-");
           if (!y || !m) return;
           const key = `${y}-${m}`;
           const idx = meses.findIndex((ms) => ms.key === key);
@@ -194,7 +232,7 @@ const VistaAnalisis = ({ metricas, datosGrafica }) => {
           // Inicializar horas típicas del restaurante (10:00 - 22:00)
           const horasIniciales = {};
           for (let h = 10; h <= 22; h++) {
-            const hh = String(h).padStart(2, '0');
+            const hh = String(h).padStart(2, "0");
             horasIniciales[`${hh}:00`] = 0;
           }
 
@@ -202,9 +240,9 @@ const VistaAnalisis = ({ metricas, datosGrafica }) => {
           todas.forEach((r) => {
             if (!r.hora) return;
             // Espera formatos como '19:00:00' o '19:00'
-            const horaPart = r.hora.split(':');
+            const horaPart = r.hora.split(":");
             if (!horaPart || horaPart.length === 0) return;
-            const hh = horaPart[0].padStart(2, '0');
+            const hh = horaPart[0].padStart(2, "0");
             const key = `${hh}:00`;
             if (horasConteo[key] === undefined) {
               horasConteo[key] = 0; // incluir horas fuera del rango
@@ -218,23 +256,27 @@ const VistaAnalisis = ({ metricas, datosGrafica }) => {
           try {
             const clientesMap = {};
             todas.forEach((r) => {
-              const nombre = r.cliente_nombre || r.cliente || 'Cliente desconocido';
-              const email = r.cliente_email || '';
-              if (!clientesMap[nombre]) clientesMap[nombre] = { nombre, email, reservas: 0 };
+              const nombre =
+                r.cliente_nombre || r.cliente || "Cliente desconocido";
+              const email = r.cliente_email || "";
+              if (!clientesMap[nombre])
+                clientesMap[nombre] = { nombre, email, reservas: 0 };
               clientesMap[nombre].reservas += 1;
             });
-            const ordenados = Object.values(clientesMap).sort((a, b) => b.reservas - a.reservas);
+            const ordenados = Object.values(clientesMap).sort(
+              (a, b) => b.reservas - a.reservas,
+            );
             setTopClientes(ordenados.slice(0, 5)); // mostrar top 5
           } catch (err) {
-            console.error('Error calculando top clientes:', err);
+            console.error("Error calculando top clientes:", err);
             setTopClientes(null);
           }
         } catch (err) {
-          console.error('Error calculando horas pico:', err);
+          console.error("Error calculando horas pico:", err);
           setHorasData(null);
         }
       } catch (error) {
-        console.error('Error construyendo datos mensuales:', error);
+        console.error("Error construyendo datos mensuales:", error);
         // fallback vacío
         setMensualData(null);
         setHorasData(null);
@@ -296,24 +338,29 @@ const VistaAnalisis = ({ metricas, datosGrafica }) => {
       <div className="analisis-grid">
         {/* Mostrar solo una gráfica tipo 'Inicio' + una gráfica mensual 12 meses */}
         <div className="grafico-container">
-          <h3>Reservas Semana (mismo formato que Inicio)</h3>
-          <GraficaReservas datos={datosGrafica || {
-            Lun: 45,
-            Mar: 52,
-            Mié: 61,
-            Jue: 58,
-            Vie: 78,
-            Sáb: 95,
-            Dom: 88,
-          }} />
+          <GraficaReservas
+            datos={
+              datosGrafica || {
+                Lun: 45,
+                Mar: 52,
+                Mié: 61,
+                Jue: 58,
+                Vie: 78,
+                Sáb: 95,
+                Dom: 88,
+              }
+            }
+          />
         </div>
 
         <div className="grafico-container">
-          <GraficaMensual datos={
-            // Usar primero los datos calculados en este componente (mensualData),
-            // si no existen, caer back a metricas.mensual provista por la API.
-            mensualData || (metricas && metricas.mensual)
-          } />
+          <GraficaMensual
+            datos={
+              // Usar primero los datos calculados en este componente (mensualData),
+              // si no existen, caer back a metricas.mensual provista por la API.
+              mensualData || (metricas && metricas.mensual)
+            }
+          />
         </div>
 
         <div className="grafico-container">
@@ -321,8 +368,18 @@ const VistaAnalisis = ({ metricas, datosGrafica }) => {
         </div>
 
         <div className="grafico-container">
-          <TopClientes clientes={topClientes} />
+          <h3>Top Reservas</h3>
+          <TopClientes
+            clientes={topClientes}
+            titulo="Top Reservas"
+            periodo="Más reservas"
+          />
         </div>
+        <div className="grafico-container">
+          <h3>Top Visitas</h3>
+          <TopVisitas clientes={topVisitas} />
+        </div>
+
         <div className="grafico-container">
           <EstadoReservas reservas={todasReservas} />
         </div>
