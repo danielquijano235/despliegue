@@ -15,13 +15,25 @@ import DemoFooter from './DemoFooter';
 const DemoLanding = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [modalSource, setModalSource] = useState(null);
 
-  const abrirModal = (ev) => {
-    if (ev) setSelectedEvent(ev);
+  const abrirModal = (arg) => {
+    // arg can be: event object (from Reservar evento), or a string identifier ('hero','reservar')
+    if (arg && typeof arg === 'object') {
+      setSelectedEvent(arg);
+      setModalSource('evento');
+    } else if (typeof arg === 'string') {
+      setSelectedEvent(null);
+      setModalSource(arg);
+    } else {
+      setSelectedEvent(null);
+      setModalSource('default');
+    }
     setModalVisible(true);
   };
   const cerrarModal = () => {
     setSelectedEvent(null);
+    setModalSource(null);
     setModalVisible(false);
   };
 
@@ -56,7 +68,7 @@ const DemoLanding = () => {
       <DemoEventos onOpenReserva={abrirModal} />
       <DemoContacto />
 
-      <DemoReserva visible={modalVisible} onCerrar={cerrarModal} selectedEvent={selectedEvent} />
+      <DemoReserva visible={modalVisible} onCerrar={cerrarModal} selectedEvent={selectedEvent} source={modalSource} />
       <DemoFooter />
       
     </div>

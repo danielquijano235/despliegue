@@ -153,20 +153,13 @@ const VistaReservas = () => {
     setCargando(true);
     try {
       const datos = await obtenerTodasReservas();
-      // Mezcla de reservas: combinamos las reservas recibidas desde el backend
-      // con las reservas demo que se guardaron localmente (flujo sin sesión).
-      // Esto permite que las reservas hechas en modo demo se vean en el dashboard
-      // en la misma máquina/navegador aunque no lleguen al backend.
-      const demo = JSON.parse(localStorage.getItem('demo_reservas') || '[]');
-      // `datos` normalmente es un array desde el backend; colocamos primero las demo
-      // locales para que se vean inmediatamente en la tabla.
-      const todos = demo.concat(Array.isArray(datos) ? datos : []);
+      // Usar únicamente los datos recibidos desde el backend.
+      const todos = Array.isArray(datos) ? datos : [];
       setReservas(todos);
     } catch (error) {
       console.error("Error al cargar reservas:", error);
-      // On error, still include demo reservations if any
-      const demo = JSON.parse(localStorage.getItem('demo_reservas') || '[]');
-      setReservas(demo.length ? demo : reservasEjemplo);
+      // On error, mostrar datos de ejemplo
+      setReservas(reservasEjemplo);
     } finally {
       setCargando(false);
     }
