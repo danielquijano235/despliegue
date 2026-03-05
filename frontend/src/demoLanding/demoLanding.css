@@ -4,11 +4,7 @@
   overflow-x: hidden; /* evitar scroll horizontal cuando footer es full-bleed */
   position: relative; /* permitir que el header se posicione sobre el hero */
 }
-<<<<<<< HEAD
-.demo-landing .demo-footer {
-  display: block !important;
-}
-=======
+/* ...existing code... */
 
 /* Asegurar cursor pointer en elementos interactivos dentro del demo landing
    (fix visual local; no afecta otros modales ni estilos globales) */
@@ -18,8 +14,7 @@
 .demo-landing .demo-btn-empezar {
   cursor: pointer !important;
 }
-.demo-landing .demo-footer { display: block !important; }
->>>>>>> 10e3833a0541c0c9ce822a93bcabfc03f2e9caa2
+/* ...existing code... */
 
 /* Credit bar below demo footer */
 .demo-credit-bar {
