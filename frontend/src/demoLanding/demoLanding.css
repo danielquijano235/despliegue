@@ -204,17 +204,22 @@
 .demo-info {
   background: linear-gradient(180deg, rgba(30,58,95,0.02), rgba(253,176,34,0.02));
   border-radius: 12px;
-  padding: 4rem 1.5rem; /* aumentar padding vertical para más espacio */
+  padding: 4rem 3rem; /* ampliar padding lateral para más espacio a los lados */
   min-height: 520px; /* contenedor más alto, evita efecto 'sándwich' */
 }
 
 .demo-info-grid {
   display: grid;
-  /* texto (35%) + imagen (65%) — imagen más ancha */
-  grid-template-columns: 35% 65%;
-  gap: 3rem; /* espacio entre texto e imagen */
+  /* texto (40%) + imagen (60%) — imagen más ancha */
+  grid-template-columns: 40% 60%;
+  gap: 3.5rem; /* espacio entre texto e imagen */
   align-items: center;
   justify-content: center; /* center the two-column block inside the section */
+  max-width: 1500px; /* ampliar el ancho permitido para que no quede tan centrado estrecho */
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 0 0.75rem; /* pequeño padding interno para móviles */
 }
 
 .demo-info-text h2 {
