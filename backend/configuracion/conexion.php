@@ -88,8 +88,17 @@ $conexion = mysqli_connect($servidor, $usuario, $contrasena, $base_datos, $puert
 
 // Verificar si la conexión fue exitosa
 if (!$conexion) {
-    // Si falla, mostrar error y detener el script
-    die("Error de conexión: " . mysqli_connect_error());
+    // Si falla la conexión, registrar y devolver JSON (evita HTML)
+    $msg = mysqli_connect_error();
+    error_log('[BOOKIT] DB connection error: ' . $msg);
+    if (!headers_sent()) {
+        header('Content-Type: application/json; charset=UTF-8');
+        header('Access-Control-Allow-Credentials: true');
+        header('Vary: Origin');
+    }
+    http_response_code(500);
+    echo json_encode(['error' => 'DB connection error', 'detail' => $msg]);
+    exit();
 }
 
 // Configurar la codificación a UTF-8 (utf8mb4) para soportar todos los caracteres
