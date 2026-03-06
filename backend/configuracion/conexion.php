@@ -111,10 +111,18 @@ header("Content-Type: application/json; charset=UTF-8");  // Todas las respuesta
 // MANEJAR PETICIONES PREFLIGHT (OPTIONS)
 // El navegador envía una petición OPTIONS antes de
 // la petición real para verificar si tiene permisos.
-// Respondemos con 200 OK para que continúe.
+// Respondemos con 200 OK y enviamos los headers CORS necesarios.
 // ============================================
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    // Reafirmar headers para la respuesta preflight
+    $origin = isset($_SERVER['HTTP_ORIGIN']) ? rtrim($_SERVER['HTTP_ORIGIN'], '/') : ($allowed_origins[0] ?? 'http://localhost:3000');
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Vary: Origin');
+    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Accept');
     http_response_code(200);
+    echo json_encode(['ok' => true]);
     exit();
 }
 
