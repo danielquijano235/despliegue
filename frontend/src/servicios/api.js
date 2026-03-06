@@ -3,9 +3,9 @@
 // ============================================
 // CONFIGURACIÓN BASE
 // `REACT_APP_API_URL` se inyecta en tiempo de build por Create React App.
-// Por defecto mantenemos el valor de desarrollo apuntando a localhost.
+// Valor por defecto apuntando al backend desplegado en Render.
 // ============================================
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost/bookit-api';
+const API_URL = process.env.REACT_APP_API_URL || 'https://despliegue-back-uw2a.onrender.com';
 
 /**
  * Función auxiliar para hacer peticiones HTTP

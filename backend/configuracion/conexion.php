@@ -24,7 +24,25 @@ $contrasena = getenv('DB_PASS') ?: '';
 $base_datos = getenv('DB_NAME') ?: 'bookit';
 
 // Origen del frontend para CORS (ej. https://mi-frontend.onrender.com)
+// Valor por defecto para desarrollo
 $frontend_url = getenv('FRONTEND_URL') ?: 'http://localhost:3000';
+
+// Construir lista de orígenes permitidos (allowlist)
+$allowed_origins = array_filter([
+    $frontend_url,
+    'http://localhost:3000',
+    'http://localhost'
+]);
+
+// Determinar el origen de la petición y responder dinámicamente si está permitido
+$request_origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+if ($request_origin && in_array($request_origin, $allowed_origins, true)) {
+    header('Access-Control-Allow-Origin: ' . $request_origin);
+} else {
+    // Fallback a la URL configurada (útil para herramientas que no envían Origin)
+    header('Access-Control-Allow-Origin: ' . $frontend_url);
+}
+header('Vary: Origin');
 
 // ============================================
 // CREAR CONEXIÓN CON LA BASE DE DATOS
@@ -47,9 +65,9 @@ mysqli_query($conexion, "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'");
 // CONFIGURACIÓN DE CORS (Cross-Origin Resource Sharing)
 // Leemos el origen permitido desde la variable FRONTEND_URL
 // ============================================
-header("Access-Control-Allow-Origin: " . $frontend_url);
+// Métodos, headers y credenciales permitidas
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Accept");
 header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json; charset=UTF-8");  // Todas las respuestas serán JSON
 
