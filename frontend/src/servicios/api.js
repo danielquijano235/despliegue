@@ -44,6 +44,8 @@ const peticion = async (endpoint, opciones = {}) => {
   }
 };
 
+//comentario bobo 
+
 
 
 /**
