@@ -50,7 +50,7 @@ if ($request_origin && in_array($request_origin, $allowed_origins, true)) {
 $servidor = 'sql304.infinityfree.com';
 $usuario = 'if0_41316814';
 $contrasena = 'camilo281';
-$base_datos = 'if0_41316814_XXX'; // Reemplaza XXX por el nombre real de tu base de datos
+$base_datos = 'if0_41316814_bookit';
 
 // Origen del frontend para CORS
 $frontend_url = 'https://despliegue-j2d2.onrender.com';

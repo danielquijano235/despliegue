@@ -3,7 +3,7 @@
 // `REACT_APP_API_URL` se inyecta en tiempo de build por Create React App.
 // Valor por defecto apuntando al backend desplegado en Render.
 // ============================================
-const API_URL = "https://bookit.kesug.com";
+const API_URL = "https://bookit.kesug.com/bookit-api";
 
 /**
  * Función auxiliar para hacer peticiones HTTP
