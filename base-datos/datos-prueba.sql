@@ -5,7 +5,7 @@
 -- poder probar todas las funciones de la aplicación.
 -- ============================================
 
-USE bookit;
+-- Elimina esta línea para InfinityFree. Selecciona la base de datos manualmente en phpMyAdmin.
 
 -- ============================================
 -- USUARIO DE PRUEBA

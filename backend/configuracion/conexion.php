@@ -17,12 +17,8 @@
 // En producción se recomienda configurar las variables de entorno
 // DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME y FRONTEND_URL
 // ============================================
-$servidor = getenv('DB_HOST') ?: 'localhost';
-$puerto = intval(getenv('DB_PORT') ?: 3306);
-$usuario = getenv('DB_USER') ?: 'root';
-$contrasena = getenv('DB_PASS') ?: '';
-$base_datos = getenv('DB_NAME') ?: 'bookit';
 
+<<<<<<< HEAD
 // Orígenes permitidos para CORS (desde env). Soporta `FRONTEND_URL` o `FRONTEND_URLS` (coma-separada)
 $frontend_env = getenv('FRONTEND_URL') ?: '';
 $frontend_env_multi = getenv('FRONTEND_URLS') ?: '';
@@ -51,61 +47,18 @@ if ($request_origin && in_array($request_origin, $allowed_origins, true)) {
     $fallback = !empty($allowed_origins) ? $allowed_origins[0] : 'http://localhost:3000';
     header('Access-Control-Allow-Origin: ' . $fallback);
 }
-header('Vary: Origin');
+$servidor = 'sql304.infinityfree.com';
+$usuario = 'if0_41316814';
+$contrasena = 'camilo281';
+$base_datos = 'if0_41316814_XXX'; // Reemplaza XXX por el nombre real de tu base de datos
 
-// Enviar headers CORS esenciales de forma temprana para que los preflight/options reciban respuesta
-header('Access-Control-Allow-Credentials: true');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Accept');
-header('Content-Type: application/json; charset=UTF-8');  // Default JSON
-
-// Evitar mostrar errores en HTML y capturar errores fatales al final del script
-ini_set('display_errors', '0');
-error_reporting(E_ALL);
-register_shutdown_function(function() use ($allowed_origins) {
-    $err = error_get_last();
-    if ($err && in_array($err['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
-        if (!headers_sent()) {
-            $origin = isset($_SERVER['HTTP_ORIGIN']) ? rtrim($_SERVER['HTTP_ORIGIN'], '/') : ($allowed_origins[0] ?? 'http://localhost:3000');
-            header('Access-Control-Allow-Origin: ' . $origin);
-            header('Vary: Origin');
-            header('Access-Control-Allow-Credentials: true');
-            header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-            header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Accept');
-            header('Content-Type: application/json; charset=UTF-8');
-        }
-        http_response_code(500);
-        echo json_encode(['error' => 'Internal server error', 'detail' => $err['message']]);
-        exit();
-    }
-});
-
-// ============================================
-// CREAR CONEXIÓN CON LA BASE DE DATOS
-// Usamos mysqli_connect para conectar PHP con MySQL
-// ============================================
-$conexion = mysqli_connect($servidor, $usuario, $contrasena, $base_datos, $puerto);
-
-// Verificar si la conexión fue exitosa
-if (!$conexion) {
-    // Si falla la conexión, registrar y devolver JSON (evita HTML)
-    $msg = mysqli_connect_error();
-    error_log('[BOOKIT] DB connection error: ' . $msg);
-    if (!headers_sent()) {
-        header('Content-Type: application/json; charset=UTF-8');
-        header('Access-Control-Allow-Credentials: true');
-        header('Vary: Origin');
-    }
-    http_response_code(500);
-    echo json_encode(['error' => 'DB connection error', 'detail' => $msg]);
-    exit();
-}
-
-// Configurar la codificación a UTF-8 (utf8mb4) para soportar todos los caracteres
-mysqli_set_charset($conexion, "utf8mb4");
-// Asegurar también la conexión con SET NAMES en caso de capas intermedias
-mysqli_query($conexion, "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'");
-
+// Origen del frontend para CORS
+$frontend_url = 'https://despliegue-j2d2.onrender.com';
+header("Access-Control-Allow-Origin: $frontend_url");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Credentials: true");
+header("Content-Type: application/json; charset=UTF-8");
 // ============================================
 // CONFIGURACIÓN DE CORS (Cross-Origin Resource Sharing)
 // Leemos el origen permitido desde la variable FRONTEND_URL

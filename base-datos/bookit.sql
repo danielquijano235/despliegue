@@ -6,8 +6,7 @@
 -- ============================================
 
 -- Crear la base de datos si no existe
-CREATE DATABASE IF NOT EXISTS bookit CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE bookit;
+-- Elimina estas líneas para InfinityFree. Crea la base de datos manualmente en el panel.
 
 -- ============================================
 -- TABLA: usuarios
